@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-project(slenderproject)
+project(SlenderProject)
 
 set(CMAKE_DEBUG_POSTFIX _d)
 set(THIRDPARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
