@@ -15,6 +15,9 @@ add_subdirectory(${THIRDPARTY_DIR}/glfw)
 
 include_directories(${THIRDPARTY_DIR}/glew/include)
 include_directories(${THIRDPARTY_DIR}/glfw/include)
+include_directories(${THIRDPARTY_DIR}/glm)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(GLEW_LIB_NAME glew64)
@@ -24,9 +27,10 @@ endif()
 
 set(THIRDPARTY_LIBS ${OPENGL_LIBRARY} ${GLEW_LIB_NAME} glfw ${GLFW_LIBRARIES})
 
-file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+file(GLOB_RECURSE HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
+file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} ${THIRDPARTY_LIBS})
 
 if (MSVC)
