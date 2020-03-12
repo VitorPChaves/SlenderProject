@@ -32,3 +32,7 @@ void Camera::transform(Shader* shader) {
 	shader->setMat4("projection", projection);
 	shader->setMat4("view", view);
 }
+
+void Camera::input(GLFWwindow* window) {
+	// TODO
+}

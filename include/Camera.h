@@ -20,7 +20,7 @@ public:
 
 	void transform(Shader* shader);
 
-	void input(GLFWwindow* window) {}
+	void input(GLFWwindow* window);
 
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos) {}
 
