@@ -253,8 +253,8 @@ int main() {
 
 	initBuffers();
 
-	Shader myShader("C:/Users/vitor.patricio/Documents/Codes/Desafio OpenGl/cg-internship-test-master/src/vsCube.txt", "C:/Users/vitor.patricio/Documents/Codes/Desafio OpenGl/cg-internship-test-master/src/fsCube.txt");
-	Shader lightingShader("C:/Users/vitor.patricio/Documents/Codes/Desafio OpenGl/cg-internship-test-master/src/shader.vs.txt", "C:/Users/vitor.patricio/Documents/Codes/Desafio OpenGl/cg-internship-test-master/src/shader.fs.txt");
+	Shader myShader("../shaders/vsCube.txt", "../shaders/fsCube.txt");
+	Shader lightingShader("../shaders/shader.vs.txt", "../shaders/shader.fs.txt");
 
 	diffuseMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/container2.png");
 	specularMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/container2_specular.png");
