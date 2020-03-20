@@ -1,7 +1,6 @@
 #include <Flashlight.h>
 
 void Flashlight::lightImpact(Shader& shader, Camera& camera) {
-	shader.use();
 	shader.setVec3("light.position", camera.cameraP);
 	shader.setVec3("light.direction", camera.cameraF);
 	shader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));

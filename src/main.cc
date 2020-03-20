@@ -3,6 +3,8 @@
 #include <Shader.h>
 #include <Camera.h>
 #include <stb_image.h>
+#include <Moonlight.h>
+#include <Flashlight.h>
 
 GLFWwindow* window = nullptr;
 
@@ -254,7 +256,7 @@ int main() {
 	initBuffers();
 
 	Shader myShader("../shaders/vsCube.txt", "../shaders/fsCube.txt");
-	Shader lightingShader("../shaders/shader.vs.txt", "../shaders/shader.fs.txt");
+	Shader lightingShader("../shaders/slenderman.vs.txt", "../shaders/slenderman.fs.txt");
 
 	diffuseMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/container2.png");
 	specularMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/container2_specular.png");
@@ -269,7 +271,9 @@ int main() {
 		camera->input(window);
 
 		myShader.use();
-
+		Camera camera = Camera();
+		Moonlight moonlight = Moonlight();
+		moonlight.lightImpact(lightingShader, camera);
 		myShader.setVec3("light.position", camera->cameraP);
 		myShader.setVec3("light.direction", camera->cameraF);
 		myShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
