@@ -254,7 +254,9 @@ int main() {
 	}
 
 	initBuffers();
-
+	Camera camera = Camera();
+	Moonlight moonlight = Moonlight();
+	Flashlight flashlight = Flashlight();
 	Shader myShader("../shaders/vsCube.txt", "../shaders/fsCube.txt");
 	Shader lightingShader("../shaders/slenderman.vs.txt", "../shaders/slenderman.fs.txt");
 
@@ -268,27 +270,12 @@ int main() {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		camera->input(window);
+		camera.input(window);
 
 		myShader.use();
-		Camera camera = Camera();
-		Moonlight moonlight = Moonlight();
+		
 		moonlight.lightImpact(lightingShader, camera);
-		myShader.setVec3("light.position", camera->cameraP);
-		myShader.setVec3("light.direction", camera->cameraF);
-		myShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
-		myShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
-		myShader.setVec3("viewPos", camera->cameraP);
-
-		myShader.setVec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-		myShader.setVec3("light.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-		myShader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
-		myShader.setFloat("light.constant", 1.0f);
-		myShader.setFloat("light.linear", 0.09f);
-		myShader.setFloat("light.quadratic", 0.032f);
-
-		myShader.setFloat("material.shininess", 32.0f);
+		flashlight.lightImpact(lightingShader, camera);
 
 		drawCube(&myShader);
 
