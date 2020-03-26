@@ -1,16 +1,16 @@
 #include <Flashlight.h>
 
 void Flashlight::lightImpact(Shader& shader, Camera& camera) {
-	shader.setVec3("light.position", camera.cameraP);
-	shader.setVec3("light.direction", camera.cameraF);
-	shader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
-	shader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
-	shader.setVec3("viewPos", camera.cameraP);
+	shader.setVec3("spotLight.position", camera.cameraP);
+	shader.setVec3("spotLight.direction", camera.cameraF);
+	shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(30.5f)));
+	shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(80.5f)));
 
-	shader.setVec3("light.ambient", 0.1f, 0.1f, 0.1f);
-	shader.setVec3("light.diffuse", 0.8f, 0.8f, 0.8f);
-	shader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-	shader.setFloat("light.constant", 1.0f);
-	shader.setFloat("light.linear", 0.09f);
-	shader.setFloat("light.quadratic", 0.032f);
+
+	shader.setVec3("SpotLight.ambient", 0.1f, 0.1f, 0.1f);
+	shader.setVec3("spotLight.diffuse", 0.8f, 0.8f, 0.8f);
+	shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+	shader.setFloat("spotLight.constant", 1.0f);
+	shader.setFloat("spotLight.linear", 0.09f);
+	shader.setFloat("spotLight.quadratic", 0.032f);
 }

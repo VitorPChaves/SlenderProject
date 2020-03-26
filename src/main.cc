@@ -180,7 +180,7 @@ void drawCube(Shader* shader) {
 	shader->use();
 	shader->setInt("material.diffuse", 0);
 	shader->setInt("material.specular", 1);
-	shader->setInt("material.emission", 2);
+	//shader->setInt("material.emission", 2);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -188,8 +188,8 @@ void drawCube(Shader* shader) {
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, specularMap);
 
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, emissionMap);
+	//glActiveTexture(GL_TEXTURE2);
+	//glBindTexture(GL_TEXTURE_2D, emissionMap);
 
 	shader->setFloat("time", time);
 
@@ -242,9 +242,9 @@ bool initGL() {
 
 	glEnable(GL_BLEND);// you enable blending function
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	return true;
 }
+
 
 
 int main() {
@@ -260,8 +260,8 @@ int main() {
 	Shader myShader("../shaders/vsCube.txt", "../shaders/fsCube.txt");
 	Shader lightingShader("../shaders/slenderman.vs.txt", "../shaders/slenderman.fs.txt");
 
-	diffuseMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/container2.png");
-	specularMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/container2_specular.png");
+	diffuseMap = initTexture("../images/container2.png");
+	specularMap = initTexture("../images/container2_specular.png");
 	//emissionMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/matrix.jpg");
 
 	glEnable(GL_DEPTH_TEST);
@@ -272,12 +272,13 @@ int main() {
 
 		camera.input(window);
 
-		myShader.use();
-		
+		lightingShader.use();
+		lightingShader.setVec3("viewPos", camera.cameraP);
+		lightingShader.setFloat("material.shininess", 64.0f);
 		moonlight.lightImpact(lightingShader, camera);
 		flashlight.lightImpact(lightingShader, camera);
 
-		drawCube(&myShader);
+		drawCube(&lightingShader);
 
 		//lightingShader.use();
 

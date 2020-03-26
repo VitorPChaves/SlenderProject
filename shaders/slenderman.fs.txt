@@ -1,3 +1,4 @@
+#version 330 core
 out vec4 FragColor;
 
 struct Material {
@@ -78,7 +79,6 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     specular *= attenuation * intensity;
     return (ambient + diffuse + specular);
 }
-
 
 void main()
 {    

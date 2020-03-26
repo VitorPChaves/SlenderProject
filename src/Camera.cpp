@@ -86,3 +86,29 @@ void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	direction.y = sin(glm::radians(pitch));
 	cameraF = glm::normalize(direction);
 }
+void Camera::updateCameraVectors() {
+	// Calculate the new Front vector
+	glm::vec3 front;
+	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.y = sin(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	cameraF = glm::normalize(front);
+	// Also re-calculate the Right and Up vector
+	cameraR = glm::normalize(glm::cross(cameraF, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+	cameraUp = glm::normalize(glm::cross(cameraR, cameraF));
+}
+Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float Yaw, float Pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+	Position = glm::vec3(posX, posY, posZ);
+	WorldUp = glm::vec3(upX, upY, upZ);
+	yaw = Yaw;
+	pitch = Pitch;
+	updateCameraVectors();
+}
+Camera::Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float Yaw = yaw, float Pitch = pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+{
+	Position = position;
+	WorldUp = up;
+	yaw = Yaw;
+	pitch = Pitch;
+	updateCameraVectors();
+}
