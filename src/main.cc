@@ -8,7 +8,7 @@
 
 GLFWwindow* window = nullptr;
 
-Camera* camera = new Camera;
+Camera camera;
 
 unsigned int VAO, VBO, lightVAO, diffuseMap, specularMap, emissionMap;
 
@@ -16,7 +16,7 @@ glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	camera->mouse_callback(window, xpos, ypos);
+	camera.mouse_callback(window, xpos, ypos);
 }
 
 unsigned int initTexture(char const * path) {
@@ -132,31 +132,31 @@ void initBuffers() {
 
 }
 
-void drawLight(Shader* shader) {
-
-	//lightPos.x = cos(glfwGetTime());
-	//lightPos.y = cos(glfwGetTime());
-	//lightPos.z = sin(glfwGetTime());
-
-	glm::mat4 model = glm::mat4(1.0f);
-
-	shader->use();
-
-	camera->transform(shader);
-
-	float angle = glm::radians(glfwGetTime());
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPos);
-	model = glm::scale(model, glm::vec3(0.2f));
-	model = glm::rotate(model, angle, lightPos);
-
-	shader->setMat4("model", model);
-
-	glBindVertexArray(lightVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-}
+//void drawLight(Shader* shader) {
+//
+//	//lightPos.x = cos(glfwGetTime());
+//	//lightPos.y = cos(glfwGetTime());
+//	//lightPos.z = sin(glfwGetTime());
+//
+//	glm::mat4 model = glm::mat4(1.0f);
+//
+//	shader->use();
+//
+//	camera->transform(shader);
+//
+//	float angle = glm::radians(glfwGetTime());
+//
+//	model = glm::mat4(1.0f);
+//	model = glm::translate(model, lightPos);
+//	model = glm::scale(model, glm::vec3(0.2f));
+//	model = glm::rotate(model, angle, lightPos);
+//
+//	shader->setMat4("model", model);
+//
+//	glBindVertexArray(lightVAO);
+//	glDrawArrays(GL_TRIANGLES, 0, 36);
+//
+//}
 
 void drawCube(Shader* shader) {
 
@@ -175,7 +175,7 @@ void drawCube(Shader* shader) {
 
 	float time = glfwGetTime();
 
-	camera->transform(shader);
+	camera.transform(shader);
 
 	shader->use();
 	shader->setInt("material.diffuse", 0);
@@ -254,7 +254,6 @@ int main() {
 	}
 
 	initBuffers();
-	Camera camera = Camera();
 	Moonlight moonlight = Moonlight();
 	Flashlight flashlight = Flashlight();
 	Shader myShader("../shaders/vsCube.txt", "../shaders/fsCube.txt");
