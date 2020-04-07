@@ -16,6 +16,7 @@ add_subdirectory(${THIRDPARTY_DIR}/glfw)
 include_directories(${THIRDPARTY_DIR}/glew/include)
 include_directories(${THIRDPARTY_DIR}/glfw/include)
 include_directories(${THIRDPARTY_DIR}/glm)
+include_directories(${THIRDPARTY_DIR}/assimp)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
