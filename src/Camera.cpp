@@ -12,22 +12,22 @@ void Camera::transform(Shader* shader) {
 	shader->setMat4("view", view);
 }
 
-float Camera::startRun() {
-	auto end = glfwGetTime();
-	Sleep(10000);
-	auto start = glfwGetTime();
-	float time = start - end;
-	return time;
-}
-
-float Camera::endRun() {
-	auto start = glfwGetTime();
-	Sleep(2000);
-	auto end = glfwGetTime();
-	float time = end - start;
-
-	return time;
-}
+//float Camera::startRun() {
+//	auto end = glfwGetTime();
+//	Sleep(10000);
+//	auto start = glfwGetTime();
+//	float time = start - end;
+//	return time;
+//}
+//
+//float Camera::endRun() {
+//	auto start = glfwGetTime();
+//	Sleep(2000);
+//	auto end = glfwGetTime();
+//	float time = end - start;
+//
+//	return time;
+//}
 
 
 void Camera::input(GLFWwindow* window) {
@@ -70,36 +70,6 @@ void Camera::input(GLFWwindow* window) {
 		}
 	}
 
-
-
-	//if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-	//	if (cameraF  20.0f) {
-	//		cameraP.y += 0.1f;
-	//	}
-	//	if (cameraP.y >= 0.0f || (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)) {
-	//		check = true;
-	//	}
-	//}
-
-	//if (cameraP.y <= 0.0f) {
-	//	check = false;
-	//}
-
-	//if (check == true) {
-	//	cameraP.y -= 0.1f;
-
-	//	if (cameraP.z == 5.0f) {
-	//		cameraP.y = 3.0f;
-	//	}
-	//	else {
-	//		cameraP.y -= 0.1f;
-	//	}w
-	//}
-
-	//if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-	//	check = false;
-	//}
-
 }
 
 void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -134,34 +104,3 @@ void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	direction.y = sin(glm::radians(pitch));
 	cameraF = glm::normalize(direction);
 }
-
-//void Camera::updateCameraVectors() {
-//
-//	// Calculate the new Front vector
-//	glm::vec3 front;
-//	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-//	front.y = sin(glm::radians(pitch));
-//	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-//	cameraF = glm::normalize(front);
-//
-//	// Also re-calculate the Right and Up vector
-//	cameraR = glm::normalize(glm::cross(cameraF, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-//	cameraUp = glm::normalize(glm::cross(cameraR, cameraF));
-//}
-//
-//Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float Yaw, float Pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
-//	Position = glm::vec3(posX, posY, posZ);
-//	WorldUp = glm::vec3(upX, upY, upZ);
-//	yaw = Yaw;
-//	pitch = Pitch;
-//	updateCameraVectors();
-//}
-//
-//Camera::Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float Yaw = yaw, float Pitch = pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
-//{
-//	cameraP = position;
-//	worldUp = up;
-//	yaw = Yaw;
-//	pitch = Pitch;
-//	updateCameraVectors();
-//}
