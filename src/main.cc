@@ -21,7 +21,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	camera.mouse_callback(window, xpos, ypos);
 }
 
-unsigned int initTexture(char const* path) {
+/*unsigned int initTexture(char const* path) {
 	unsigned int textureID;
 
 	glGenTextures(1, &textureID);
@@ -58,7 +58,7 @@ unsigned int initTexture(char const* path) {
 
 
 	return textureID;
-}
+}*/
 
 /*void initBuffers() {
 
@@ -139,7 +139,7 @@ unsigned int initTexture(char const* path) {
 //	lightPos.x = cos(glfwGetTime());
 //	lightPos.y = cos(glfwGetTime());
 //	lightPos.z = sin(glfwGetTime());
-}
+//}
 
 //void drawLight(Shader* shader) {
 //
@@ -304,14 +304,13 @@ bool initGL() {
 }
 
 
-
 int main() {
 
 	if (!initGL()) {
 		return -1;
 	}
 
-	std::cout << "asdasdasda" << std::endl;
+	std::cout << "asdasdasdasasa" << std::endl;
 
 	//initBuffers();
 	//initBuffers();
@@ -330,8 +329,8 @@ int main() {
 	//specularMap = initTexture("../images/container2_specular.png");
 	//emissionMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/matrix.jpg");
 
-	//Model myModel("C:/Users/luanb/source/repos/nanosuit/nanosuit.obj");
-	Model myModel("C:/Users/luanb/Downloads/14-runtime-callidus-v2/runtime/Libraries/Character/40K/officio assassinorum/callidus_v3.obj");
+	Model myModel("C:/Users/luanb/source/repos/steampunk_plague_doctor/scene.gltf");
+	//Model myModel("C:/Users/luanb/Downloads/14-runtime-callidus-v2/runtime/Libraries/Character/40K/officio assassinorum/callidus_v3.obj");
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -361,6 +360,8 @@ int main() {
 		//drawLight(&lightingShader);
 
 		myShader.use();
+
+		camera.transform(&myShader);
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
