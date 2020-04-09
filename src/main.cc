@@ -310,8 +310,6 @@ int main() {
 		return -1;
 	}
 
-	std::cout << "asdasdasdasasa" << std::endl;
-
 	//initBuffers();
 	//initBuffers();
 
