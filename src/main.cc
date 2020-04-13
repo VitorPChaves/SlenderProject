@@ -319,7 +319,6 @@ int main() {
 	//Shader lightingShader("../shaders/slenderman.vs.txt", "../shaders/slenderman.fs.txt");
 	Shader myShader("../shaders/vsSuit.txt", "../shaders/fsSuit.txt");
 
-
 	//diffuseMap = initTexture("../images/container2.png");
 	//specularMap = initTexture("../images/container2_specular.png");
 
