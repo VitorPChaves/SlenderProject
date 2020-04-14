@@ -40,8 +40,8 @@ void Camera::input(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		cameraP -= glm::normalize(glm::cross(cameraF, cameraUp)) * cameraSpeed;
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		cameraSpeed += 0.01f;
-		cameraP += cameraF * cameraSpeed;
+		cameraSpeed += 0.1f;
+		cameraP += cameraUp * cameraSpeed;
 	}
 
 
@@ -107,6 +107,7 @@ void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
 	cameraF = glm::normalize(direction);
+	std::cout << cameraF.x << ' ' << cameraF.y << ' ' << cameraF.z << std::endl;
 }
 
 //void Camera::updateCameraVectors() {

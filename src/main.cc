@@ -172,7 +172,6 @@ void drawCube(Shader* shader) {
 	glm::vec3(1.5f,  0.2f, -1.5f),
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
-
 	float time = glfwGetTime();
 
 	camera.transform(shader);
@@ -238,7 +237,7 @@ bool initGL() {
 		return -1;
 	}
 
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	glEnable(GL_BLEND);// you enable blending function
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -278,7 +277,9 @@ int main() {
 		flashlight.lightImpact(lightingShader, camera);
 
 		drawCube(&lightingShader);
+		for (int i = 0; i < 9;i++) {
 
+		}
 		//lightingShader.use();
 
 		//drawLight(&lightingShader);
