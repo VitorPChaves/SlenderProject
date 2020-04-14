@@ -9,7 +9,7 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm\gtc\type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader {
 public:
@@ -138,7 +138,5 @@ public:
 	void setVec3(const std::string& name, float x, float y, float z) const {
 		glUniform3f(glGetUniformLocation(shaderProgram, name.c_str()), x, y, z);
 	}
-
 };
-
 #endif
