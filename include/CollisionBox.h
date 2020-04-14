@@ -1,9 +1,8 @@
 #pragma once
-#include <Light.h>
+#include <Shader.h>
 
 
-class Flashlight: public Light {
+class Box {
 public:
-	void lightImpact(Shader& shader, Camera& camera);
-
+	
 };

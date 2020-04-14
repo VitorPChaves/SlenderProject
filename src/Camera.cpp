@@ -1,4 +1,5 @@
 #include <Camera.h>
+#include <Windows.h>
 
 void Camera::transform(Shader* shader) {
 	glm::mat4 view = glm::mat4(1.0f);
@@ -12,17 +13,26 @@ void Camera::transform(Shader* shader) {
 }
 
 float Camera::startRun() {
-	return glfwGetTime();
+	auto end = glfwGetTime();
+	Sleep(10000);
+	auto start = glfwGetTime();
+	float time = start - end;
+	return time;
 }
 
 float Camera::endRun() {
-	return glfwGetTime() * 1.2f;
+	auto start = glfwGetTime();
+	Sleep(2000);
+	auto end = glfwGetTime();
+	float time = end - start;
+
+	return time;
 }
 
 
 void Camera::input(GLFWwindow* window) {
 	float currentFrame = glfwGetTime();
-	float cameraSpeed = 7.5f * deltaTime;
+	float cameraSpeed = speed * deltaTime;
 
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
@@ -39,15 +49,31 @@ void Camera::input(GLFWwindow* window) {
 		cameraP += glm::normalize(glm::cross(cameraF, cameraUp)) * cameraSpeed;
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		cameraP -= glm::normalize(glm::cross(cameraF, cameraUp)) * cameraSpeed;
+
+
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
+		running = false;
+		speed = 2.5f;
+	}
+
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-		cameraSpeed += 0.1f;
-		cameraP += cameraUp * cameraSpeed;
+		if (!running && glfwGetTime() - runningEndTime >= 5.0f) {
+			runningEndTime = 0;
+			running = true;
+			runningStartTime = glfwGetTime();
+			speed = 10.0f;
+		} 
+		else if (glfwGetTime() - runningStartTime >= 1.0f) {
+			speed = 2.5f;
+			runningEndTime = glfwGetTime();
+		}
+
 	}
 
 
 
 	//if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-	//	if (cameraP.y <= 20.0f) {
+	//	if (cameraF  20.0f) {
 	//		cameraP.y += 0.1f;
 	//	}
 	//	if (cameraP.y >= 0.0f || (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)) {
@@ -62,12 +88,12 @@ void Camera::input(GLFWwindow* window) {
 	//if (check == true) {
 	//	cameraP.y -= 0.1f;
 
-	//	//if (cameraP.z == 5.0f) {
-	//	//	cameraP.y = 3.0f;
-	//	//}
-	//	//else {
-	//	//	cameraP.y -= 0.1f;
-	//	//}w
+	//	if (cameraP.z == 5.0f) {
+	//		cameraP.y = 3.0f;
+	//	}
+	//	else {
+	//		cameraP.y -= 0.1f;
+	//	}w
 	//}
 
 	//if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {

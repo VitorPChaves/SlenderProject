@@ -4,7 +4,7 @@
 
 class Camera {
 public:
-	glm::vec3 cameraP = glm::vec3(0.0f, 0.0f, 8.0f);
+	glm::vec3 cameraP = glm::vec3(0.0f, 0.0f, 40.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 cameraF = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -18,6 +18,13 @@ public:
 	float lastY = 300;
 	float fov = 45.0f;
 	bool check = false;
+	bool running = false;
+
+	float speed = 2.5f;
+
+	float runningStartTime;
+	float runningEndTime = glfwGetTime();
+
 
 	//// Constructor with vectors
 	//Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM);
