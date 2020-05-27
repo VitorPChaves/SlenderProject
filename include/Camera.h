@@ -4,12 +4,18 @@
 
 class Camera {
 public:
-	glm::vec3 cameraP = glm::vec3(0.0f, 0.0f, 40.0f);
+	glm::vec3 cameraP = glm::vec3(0.0f, 0.0f, 10.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 cameraF = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 cameraS = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
+	glm::mat4 view;
+	glm::mat4 projection = glm::perspective(glm::radians(fov), 1024.0f / 768.0f, 0.1f, 100.0f);
+
 	bool firstMouse = true;
+	bool running = false;
+
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
 	float yaw = -90.0f;
@@ -17,32 +23,13 @@ public:
 	float lastX = 400;
 	float lastY = 300;
 	float fov = 45.0f;
-	bool check = false;
-	bool running = false;
-
-	float speed = 2.5f;
+	float speed = 3.0f;
 
 	float runningStartTime;
 	float runningEndTime = glfwGetTime();
 
-
-	//// Constructor with vectors
-	//Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM);
-	//// Constructor with scalar values
-	//Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM);
-
-	void transform(Shader* shader);
-
-	float startRun();
-
-	float endRun();
-
+	Camera();
+	void cameraProjection(Shader* shader);
 	void input(GLFWwindow* window);
-
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-
-	//void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
-
-	//private:
-	//	void updateCameraVectors();
 };

@@ -1,5 +1,16 @@
 #include <World.h>
+#include <Model.h>
 #include <stb_image.h>
+#include <stdlib.h>
+
+World::World() {
+    treeModel = std::make_unique<Model>("C:/Users/Vitor/Documents/SlenderProject/images/Tree2/Tree.obj");
+}
+
+World::~World() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
 
 unsigned int World::initTextures(char const* path) {
 
@@ -41,18 +52,19 @@ unsigned int World::initTextures(char const* path) {
 
 void World::initBuffers() {
     float vertices[] = {
-        // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        // positions          //normal            // texture coords
+         0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 10.0f,   30.0f, 30.0f, // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   30.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+        -0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 30.0f  // top left 
     };
+
     unsigned int indices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
     };
 
-    glGenVertexArrays(1, &VAO);
+    glGenVertexArrays(1, &VAO); 
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
@@ -67,8 +79,8 @@ void World::initBuffers() {
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    // color attribute
+    
+    // normals
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
@@ -77,23 +89,64 @@ void World::initBuffers() {
     glEnableVertexAttribArray(2);
 }
 
+void World::transformGround(Shader* shader) {
+
+}
+
+// 
 void World::drawGround(Shader* shader) {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularMap);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+   
+    glm::mat4 model = glm::mat4(1.0f);
+
+    model = rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = scale(model, glm::vec3(200.0f, 200.0f, 1.0f));
 
     shader->use();
+    shader->setMat4("model", model);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    
 }
 
-void World::transformGround(Shader* shader) {
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(camera.fov), 800.0f / 600.0f, 0.1f, 100.0f);
+// Sets the tree's position, scale, and rotation(to make some diversity)
+// x and z set the position
+void World::transformTree(Shader* shader, int x, int z) {
+    glm::mat4 model = glm::mat4(1.0f);
+    float treeRotateOffset = rand() % 360;
+    float treeScaleOffset = rand() % 3 + 2;
 
-    view = glm::lookAt(camera.cameraP, camera.cameraP + camera.cameraF, camera.cameraUp);
+    model = translate(model, glm::vec3(x, 0.0f, z));
+    model = scale(model, glm::vec3(treeScaleOffset));
+    model = rotate(model, glm::radians(treeScaleOffset), glm::vec3(0.0f, 1.0f, 0.0f));
 
     shader->use();
-    shader->setMat4("projection", projection);
-    shader->setMat4("view", view);
+    shader->setMat4("model", model);
 }
+
+// Draws the trees
+// (rand() % 50) gives a random number to the offset everytime a tree is drawn
+// srand(0) makes the trees go from 0 so they dont teleport
+void World::drawTrees(Shader& shader) {
+    srand(0);
+
+    for (int x = -50; x < forestSize; x += treeSpacing) {
+        for (int z = -50; z < forestSize; z += treeSpacing) {
+            int xOffset = rand() % 50;
+            int zOffset = rand() % 50;
+
+            shader.use();
+
+            transformTree(&shader, (x + xOffset), (z + zOffset));
+            treeModel->Draw(shader);
+        }
+    }
+}
+
