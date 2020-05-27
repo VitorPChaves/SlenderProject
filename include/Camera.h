@@ -4,7 +4,7 @@
 
 class Camera {
 public:
-	glm::vec3 cameraP = glm::vec3(0.0f, 0.0f, 40.0f);
+	glm::vec3 cameraP = glm::vec3(0.0f, 0.0f, 10.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 cameraF = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
