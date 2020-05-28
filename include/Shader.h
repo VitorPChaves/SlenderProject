@@ -12,10 +12,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 class Shader {
+private:
+	//unsigned int shaderProgram;
 public:
-	int shaderProgram;
 	GLint Result = GL_FALSE;
 	int InfoLogLength = 0;
+	unsigned int shaderProgram;
 
 	// Reads and builds the shader
 	Shader(const char* vertexPath, const char* fragmentPath) {

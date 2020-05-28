@@ -15,6 +15,9 @@
 
 using namespace std;
 
+//this header is for mesh lib
+    //consist in go through the image vertices and render one for one
+
 struct Vertex {
     // position
     glm::vec3 Position;

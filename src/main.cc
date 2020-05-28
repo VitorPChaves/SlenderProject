@@ -1,269 +1,57 @@
-//#define STB_IMAGE_IMPLEMENTATION
-
 #include <Shader.h>
 #include <Camera.h>
-//#include <stb_image.h>
 #include <Moonlight.h>
 #include <Flashlight.h>
 #include <Model.h>
+#include <Texture.h>
 
+/*********************************
+NAO PODE OLHAR PRA ELE
+ELE APARECE CONFORME DETERMINADO EVENTO
+	*DEPENDENDO DO TIPO DE PISTA, ELE APARECE E NÃO DEIXA PEGAR
+OBVIO QUE VAI TER CRONOMETRO PRA ELE APARECER
+	*MAS ELE APARECE CONFORME PISTAS VÃO SENDO COLETADAS
+**********************************/
 
 GLFWwindow* window = nullptr;
 
 Camera camera;
 
-unsigned int VAO, VBO, lightVAO, diffuseMap, specularMap, emissionMap;
+unsigned int lightVAO, diffuseMap, specularMap, emissionMap;
 
-//glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
+double timeElapsed() {
+	return glfwGetTime();
+}
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	camera.mouse_callback(window, xpos, ypos);
 }
 
-/*unsigned int initTexture(char const* path) {
-	unsigned int textureID;
-
-	glGenTextures(1, &textureID);
-
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
-
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	}
-	else
-	{
-		std::cout << "ERROR LOADING PATH: " << path << std::endl;
-	}
-
-	stbi_image_free(data);
-
-
-	return textureID;
-}*/
-
-/*void initBuffers() {
-
-	float vertices[] = {
-		// positions          // normals           // texture coords
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
+//vertices defined for the texture image be applied
+vector<float> verticesPaper() {
+	vector<float> _vertices = {
+		// positions          // colors           // texture coords
+		 0.1f,  0.2f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+		 0.1f, -0.2f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+		-0.1f, -0.2f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+		-0.1f,  0.2f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 	};
 
+	return _vertices;
+}
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindVertexArray(VAO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-	glGenVertexArrays(1, &lightVAO);
-	glBindVertexArray(lightVAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-}*/
-
-//void drawLight(Shader* shader) {
-//
-//	lightPos.x = cos(glfwGetTime());
-//	lightPos.y = cos(glfwGetTime());
-//	lightPos.z = sin(glfwGetTime());
-//}
-
-//void drawLight(Shader* shader) {
-//
-//	//lightPos.x = cos(glfwGetTime());
-//	//lightPos.y = cos(glfwGetTime());
-//	//lightPos.z = sin(glfwGetTime());
-//
-//	glm::mat4 model = glm::mat4(1.0f);
-//
-//	shader->use();
-//
-//	camera->transform(shader);
-//
-//	float angle = glm::radians(glfwGetTime());
-//
-//	model = glm::mat4(1.0f);
-//	model = glm::translate(model, lightPos);
-//	model = glm::scale(model, glm::vec3(0.2f));
-//	model = glm::rotate(model, angle, lightPos);
-//
-//	shader->setMat4("model", model);
-//
-//	glBindVertexArray(lightVAO);
-//	glDrawArrays(GL_TRIANGLES, 0, 36);
-//}
-
-//void drawCube(Shader* shader) {
-//
-//	glm::vec3 cubePositions[] = {
-//	glm::vec3(0.0f,  0.0f,  0.0f),
-//	glm::vec3(2.0f,  5.0f, -15.0f),
-//	glm::vec3(-1.5f, -2.2f, -2.5f),
-//	glm::vec3(-3.8f, -2.0f, -12.3f),
-//	glm::vec3(2.4f, -0.4f, -3.5f),
-//	glm::vec3(-1.7f,  3.0f, -7.5f),
-//	glm::vec3(1.3f, -2.0f, -2.5f),
-//	glm::vec3(1.5f,  2.0f, -2.5f),
-//	glm::vec3(1.5f,  0.2f, -1.5f),
-//	glm::vec3(-1.3f,  1.0f, -1.5f)
-//	};
-//
-//	float time = glfwGetTime();
-//
-//	camera.transform(shader);
-//
-//	shader->use();
-//	shader->setInt("material.diffuse", 0);
-//	shader->setInt("material.specular", 1);
-//	//shader->setInt("material.emission", 2);
-//
-//	glActiveTexture(GL_TEXTURE0);
-//	glBindTexture(GL_TEXTURE_2D, diffuseMap);
-//
-//	glActiveTexture(GL_TEXTURE1);
-//	glBindTexture(GL_TEXTURE_2D, specularMap);
-//
-//	//glActiveTexture(GL_TEXTURE2);
-//	//glBindTexture(GL_TEXTURE_2D, emissionMap);
-//
-//	shader->setFloat("time", time);
-//
-//	for (unsigned int i = 0; i < 10; i++)
-//	{
-//		glm::mat4 model = glm::mat4(1.0f);
-//		model = glm::translate(model, cubePositions[i]);
-//		float angle = 20.0f * i;
-//		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-//		shader->setMat4("model", model);
-//
-//		glBindVertexArray(VAO);
-//		glDrawArrays(GL_TRIANGLES, 0, 36);
-//	}
-//}
-//
-//}
-/*
-void drawCube(Shader* shader) {
-
-	glm::vec3 cubePositions[] = {
-	glm::vec3(0.0f,  0.0f,  0.0f),
-	glm::vec3(2.0f,  5.0f, -15.0f),
-	glm::vec3(-1.5f, -2.2f, -2.5f),
-	glm::vec3(-3.8f, -2.0f, -12.3f),
-	glm::vec3(2.4f, -0.4f, -3.5f),
-	glm::vec3(-1.7f,  3.0f, -7.5f),
-	glm::vec3(1.3f, -2.0f, -2.5f),
-	glm::vec3(1.5f,  2.0f, -2.5f),
-	glm::vec3(1.5f,  0.2f, -1.5f),
-	glm::vec3(-1.3f,  1.0f, -1.5f)
+//indices for the vertices texture image be applied
+vector<int> indicesPaper() {
+	vector<int> _indices = {
+		0, 1, 3, // first triangle
+		1, 2, 3  // second triangle
 	};
 
-	float time = glfwGetTime();
+	return _indices;
+}
 
-	camera.transform(shader);
-
-	shader->use();
-	shader->setInt("material.diffuse", 0);
-	shader->setInt("material.specular", 1);
-	//shader->setInt("material.emission", 2);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, diffuseMap);
-
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, specularMap);
-
-	//glActiveTexture(GL_TEXTURE2);
-	//glBindTexture(GL_TEXTURE_2D, emissionMap);
-
-	shader->setFloat("time", time);
-
-	for (unsigned int i = 0; i < 10; i++)
-	{
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, cubePositions[i]);
-		float angle = 20.0f * i;
-		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-		shader->setMat4("model", model);
-
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-	}
-	
-}*/
 
 bool initGL() {
 	if (!glfwInit()) {
@@ -310,24 +98,44 @@ int main() {
 		return -1;
 	}
 
-	//initBuffers();
-	//initBuffers();
 
 	Moonlight moonlight = Moonlight();
 	Flashlight flashlight = Flashlight();
-	//Shader myShader("../shaders/vsCube.txt", "../shaders/fsCube.txt");
-	//Shader lightingShader("../shaders/slenderman.vs.txt", "../shaders/slenderman.fs.txt");
+
+	//shader relative to the paper
+	Shader lightingShader("../shaders/vsPaperCoord.txt", "../shaders/vsPaperCoord.txt");
+
+	//shader relative to the slender character 
 	Shader myShader("../shaders/vsSuit.txt", "../shaders/fsSuit.txt");
 
-	//diffuseMap = initTexture("../images/container2.png");
-	//specularMap = initTexture("../images/container2_specular.png");
+	//vertices and indices receiving their coordinates 
+		//by the functions at the top of the code
+	vector<float> vertices = verticesPaper();
+	vector<int> indices = indicesPaper();
 
-	//diffuseMap = initTexture("../images/container2.png");
-	//specularMap = initTexture("../images/container2_specular.png");
-	//emissionMap = initTexture("C:/Users/vitor.patricio/Pictures/OpenGL/matrix.jpg");
+	//texture object from the Texture class
+	Text objText(lightingShader);
+	objText.Buffers(vertices, indices);
+	objText.Bind();
 
+	//importing the image from the directory and use him as a diffuse
+	diffuseMap = objText.TextureID("C:/Users/luanb/source/repos/paper.png");
+
+	//load the character "slender" model 
 	Model myModel("C:/Users/luanb/source/repos/steampunk_plague_doctor/scene.gltf");
-	//Model myModel("C:/Users/luanb/Downloads/14-runtime-callidus-v2/runtime/Libraries/Character/40K/officio assassinorum/callidus_v3.obj");
+
+	bool showSlender = false;
+	float time_aux = 10;
+	//this is the multiplier for slender appearence
+	float i = 1;
+
+	//const char* pathh = "C:/Users/luanb/source/repos/paper.png";
+	//const char* pathh = "C:/Users/luanb/source/repos/dont_look.png";
+
+
+	lightingShader.use();
+	lightingShader.setInt("material.diffuse", 0);
+
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -336,45 +144,83 @@ int main() {
 
 		camera.input(window);
 
-		//lightingShader.use();
-		//lightingShader.setVec3("viewPos", camera.cameraP);
-		//lightingShader.setFloat("material.shininess", 64.0f);
-		//moonlight.lightImpact(lightingShader, camera);
-		//flashlight.lightImpact(lightingShader, camera);
+		/*----------LIGHTING PAPER-------------*/
+		lightingShader.use();
+		lightingShader.setVec3("light.direction", lightPos);
+		lightingShader.setVec3("viewPos", camera.cameraP);
 
-		//drawCube(&lightingShader);
+		lightingShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+		lightingShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+		lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
-		//lightingShader.use();
-		//lightingShader.setVec3("viewPos", camera.cameraP);
-		//lightingShader.setFloat("material.shininess", 64.0f);
-		//moonlight.lightImpact(lightingShader, camera);
-		//flashlight.lightImpact(lightingShader, camera);
+		lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		lightingShader.setFloat("material.shininess", 64.0f);
 
-		//drawCube(&lightingShader);
+		// view/projection transformations
+		lightingShader.use();
+		glm::mat4 projection = glm::perspective(glm::radians(camera.fov), 800.0f/600.0f, 0.1f, 100.0f);
+		glm::mat4 view = glm::lookAt(camera.cameraP, camera.cameraP + camera.cameraF, camera.cameraUp);
+		lightingShader.setMat4("projection", projection);
+		lightingShader.setMat4("view", view);
 
-		//lightingShader.use();
-
-		//drawLight(&lightingShader);
-
-		myShader.use();
-
-		camera.transform(&myShader);
-
+		// world transformation
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-		myShader.setMat4("model", model);
-		myModel.Draw(myShader);
+		lightingShader.setMat4("model", model);
+
+		// bind diffuse map
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, diffuseMap);
+
+		// render the paper
+		lightingShader.use();
+		objText.Bind();
+		//glBindVertexArray(vao);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		
+
+		/*----------SLENDER APPEARENCE-------------*/
+
+		//CLASSE GAME SETTINGS
+			//método APARIÇÃO SLENDER
+			//
+
+		//is used the time elapsed to count every second that 
+			//slender will appear or not
+		auto time = timeElapsed();
+		
+		cout << time << endl;
+
+		//the slender will appear each "multiplier(i) * 10"
+		if (time >= time_aux) {
+			showSlender = !showSlender;
+			i += 1.0;
+			time_aux+= (i * 10);
+			cout << "passs here" << endl;
+			cout << "passs here" << endl;
+			cout << "passs here" << endl;
+		}
+
+		if (showSlender) {
+			myShader.use();
+
+			camera.transform(&myShader);
+
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+			myShader.setMat4("model", model);
+			myModel.Draw(myShader);
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window));
 
-	glDeleteVertexArrays(1, &VAO);
+	//glDeleteVertexArrays(1, &vao);
 	glDeleteVertexArrays(1, &lightVAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(myShader.shaderProgram);
+	//glDeleteBuffers(1, &VBO);
+	//glDeleteProgram(myShader.shaderProgram);
 	//glDeleteProgram(lightingShader.shaderProgram);
 
 	glfwTerminate();
