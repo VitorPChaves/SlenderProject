@@ -90,10 +90,15 @@ void World::initBuffers() {
 }
 
 void World::transformGround(Shader* shader) {
+    glm::mat4 model = glm::mat4(1.0f);
 
+    model = rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = scale(model, glm::vec3(200.0f, 200.0f, 1.0f));
+
+    shader->use();
+    shader->setMat4("model", model);
 }
 
-// 
 void World::drawGround(Shader* shader) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -102,14 +107,9 @@ void World::drawGround(Shader* shader) {
     glBindTexture(GL_TEXTURE_2D, specularMap);
 
     glEnableClientState(GL_VERTEX_ARRAY);
-   
-    glm::mat4 model = glm::mat4(1.0f);
-
-    model = rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    model = scale(model, glm::vec3(200.0f, 200.0f, 1.0f));
 
     shader->use();
-    shader->setMat4("model", model);
+    transformGround(shader);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

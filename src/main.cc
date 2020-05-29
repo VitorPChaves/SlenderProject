@@ -11,12 +11,12 @@
 GLFWwindow* window = nullptr;
 Camera* camera = new Camera();
 
-
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	camera->mouse_callback(window, xpos, ypos);
 }
 
 bool initGL() {
+
 	if (!glfwInit()) {
 		fprintf(stderr, "Failed to initialize GLFW\n");
 		return false;
@@ -53,6 +53,7 @@ bool initGL() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	return true;
 }
+
 int main() {
 
 	if (!initGL()) {
@@ -66,7 +67,6 @@ int main() {
 	Flashlight* flashlight = new Flashlight();
 	Shader groundShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
 	Shader treeShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
-
 
 	world->diffuseMap = world->initTextures("../images/ground3.jpg");
 	world->specularMap = world->initTextures("../images/ground3.jpg");

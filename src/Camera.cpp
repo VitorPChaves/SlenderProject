@@ -15,7 +15,6 @@ void Camera::cameraProjection(Shader* shader) {
 	shader->setMat4("view", view);
 }
 
-
 void Camera::input(GLFWwindow* window) {
 	const auto cameraFonXZ = glm::normalize(glm::vec3(cameraF.x, 0.0f, cameraF.z));
 	float currentFrame = glfwGetTime();
@@ -25,7 +24,6 @@ void Camera::input(GLFWwindow* window) {
 	lastFrame = currentFrame;
 
 	cameraP.y = 2.0f;
-
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
