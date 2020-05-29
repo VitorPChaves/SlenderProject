@@ -11,6 +11,9 @@
 class BoundingBox{
 public:
 	BoundingBox() = default;
+	BoundingBox(const BoundingBox&) = default;
+
+	BoundingBox(const glm::vec3& _min, const glm::vec3& _max) : min(_min), max(_max) {}
 
 	BoundingBox (vector<Vertex>& vertices)
 	{
@@ -50,6 +53,7 @@ public:
 		min = sum.min;
 		max = sum.max;
 	}
+
 	BoundingBox operator+(const BoundingBox& other) const {
 		BoundingBox result;
 		result.min.x = std::min(this->min.x, other.min.x);
@@ -60,8 +64,10 @@ public:
 		result.max.z = std::max(this->max.z, other.max.z);
 		return result;
 	}
-
+	glm::vec3 getCenter() {
+		return (min + max) / 2.0f;
+	}
 	glm::vec3 min = glm::vec3(0);
 	glm::vec3 max = glm::vec3(0);
-
+	
 };

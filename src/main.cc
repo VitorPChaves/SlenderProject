@@ -6,11 +6,13 @@
 #include <Flashlight.h>
 #include <Model.h>
 #include <BoundingBox.h>
+#include <CollidingManager.h>
 
 
 GLFWwindow* window = nullptr;
 
 Camera camera;
+CollidingManager collidingManager;
 
 unsigned int VAO, VBO, lightVAO, diffuseMap, specularMap, emissionMap;
 
@@ -59,19 +61,8 @@ unsigned int initTexture(char const* path) {
 	return textureID;
 }
 
-bool inRange(unsigned low, unsigned high, unsigned x)
-{
-	return (low <= x && x <= high);
-}
-bool intersection(BoundingBox& self, Camera& player){
-	auto center = (self.max + self.min) * 0.5f;
-	auto xcenter = self.max.x - self.min.x;
-	auto zcenter = self.max.z - self.min.z;
-	auto ycenter = self.max.y - self.min.y;
-	if (inRange(self.min.x, self.min.x + xcenter, player.cameraP.x) == true && inRange(self.min.z, self.min.z + zcenter, player.cameraP.z) == true)
-			return false;
-	return true;
-}
+
+
 bool initGL() {
 	if (!glfwInit()) {
 		fprintf(stderr, "Failed to initialize GLFW\n");
@@ -128,8 +119,10 @@ int main() {
 
 	Model myModel("../images/scene.gltf");
 	BoundingBox aa(myModel.meshes);
-	
-	glm::vec3 lastPosition = camera.cameraP;
+	CollidableBody aabody(aa, true);
+	collidingManager.addBody(&camera.cameraBody);
+	collidingManager.addBody(&aabody);
+
 	glEnable(GL_DEPTH_TEST);
 
 	do {
@@ -141,14 +134,10 @@ int main() {
 		
 		moonlight.lightImpact(myShader, camera);
 		flashlight.lightImpact(myShader, camera);
-	
-		lastPosition = camera.cameraP;
-		if (intersection(aa, camera) == true) {
-			camera.input(window);
-		}
-		if (intersection(aa, camera) == false) {
-			camera.cameraP = lastPosition;
-		}
+		
+		collidingManager.moveBodies();
+		camera.input(window);
+
 		camera.transform(&myShader);
 
 		glm::mat4 model = glm::mat4(1.0f);
