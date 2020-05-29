@@ -5,7 +5,7 @@
 #include <Moonlight.h>
 #include <Flashlight.h>
 #include <Model.h>
-#include <ModelHelper.h>
+#include <BoundingBox.h>
 
 
 GLFWwindow* window = nullptr;
@@ -63,12 +63,12 @@ bool inRange(unsigned low, unsigned high, unsigned x)
 {
 	return (low <= x && x <= high);
 }
-bool intersection(std::pair<glm::vec3,glm::vec3> self, Camera player){
-	auto center = (self.second + self.first) * 0.5f;
-	auto xcenter = self.second.x - self.first.x;
-	auto zcenter = self.second.z - self.first.z;
-	auto ycenter = self.second.y - self.first.y;
-	if (inRange(self.first.x, self.first.x + xcenter, player.cameraP.x) == true && inRange(self.first.z, self.first.z + zcenter, player.cameraP.z) == true)
+bool intersection(BoundingBox& self, Camera& player){
+	auto center = (self.max + self.min) * 0.5f;
+	auto xcenter = self.max.x - self.min.x;
+	auto zcenter = self.max.z - self.min.z;
+	auto ycenter = self.max.y - self.min.y;
+	if (inRange(self.min.x, self.min.x + xcenter, player.cameraP.x) == true && inRange(self.min.z, self.min.z + zcenter, player.cameraP.z) == true)
 			return false;
 	return true;
 }
@@ -127,7 +127,7 @@ int main() {
 	specularMap = initTexture("../images/container2_specular.png");
 
 	Model myModel("../images/scene.gltf");
-	auto aa = myModel.createBox();
+	BoundingBox aa(myModel.meshes);
 	
 	glm::vec3 lastPosition = camera.cameraP;
 	glEnable(GL_DEPTH_TEST);

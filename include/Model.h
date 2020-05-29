@@ -12,7 +12,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
-#include <ModelHelper.h>
 #include <assimp/include/Importer.hpp>
 #include <assimp/include/scene.h>
 #include <assimp/include/postprocess.h>
@@ -24,6 +23,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <BoundingBox.h>
 
 using namespace std;
 
@@ -52,37 +52,6 @@ public:
             meshes[i].Draw(shader);
     }
 
-	std::pair<glm::vec3, glm::vec3> createBox()
-	{
-		glm::vec3 min = glm::vec3(99999999999, 99999999999, 99999999999);
-		glm::vec3 max = glm::vec3(-99999999999, -99999999999, -99999999999);
-
-		for (int i = 0; i < meshes.size(); ++i) {
-			auto meshBox = ModelHelper::createBox(meshes[i].vertices);
-
-			if (meshBox.first.x < min.x) {
-				min.x = meshBox.first.x;
-			}
-			if (meshBox.first.y < min.y) {
-				min.y = meshBox.first.y;
-			}
-			if (meshBox.first.z < min.z) {
-				min.z = meshBox.first.z;
-			}
-
-			if (meshBox.second.x > max.x) {
-				max.x = meshBox.second.x;
-			}
-			if (meshBox.second.y > max.y) {
-				max.y = meshBox.second.y;
-			}
-			if (meshBox.second.z > max.z) {
-				max.z = meshBox.second.z;;
-			}
-		}
-
-		return std::make_pair(min, max);
-	}
 
 private:
     /*  Functions   */
