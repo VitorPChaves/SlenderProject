@@ -6,8 +6,6 @@
 #include <Texture.h>
 
 
-//teste teste
-
 /*********************************
 NAO PODE OLHAR PRA ELE
 ELE APARECE CONFORME DETERMINADO EVENTO
