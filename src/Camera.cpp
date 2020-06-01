@@ -2,7 +2,9 @@
 #include <Windows.h>
 
 Camera::Camera() 
-{ }
+{
+	projection = glm::perspective(glm::radians(fov), 1024.0f / 768.0f, 0.1f, 100.0f);
+}
 
 void Camera::cameraProjection(Shader* shader) {
 	view = glm::mat4(1.0f);
