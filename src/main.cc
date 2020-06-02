@@ -8,6 +8,8 @@
 #include <BoundingBox.h>
 #include <CollidingManager.h>
 
+//luan new
+
 
 GLFWwindow* window = nullptr;
 Camera* camera = new Camera();
