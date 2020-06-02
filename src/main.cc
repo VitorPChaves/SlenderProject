@@ -4,6 +4,7 @@
 #include <Flashlight.h>
 #include <Model.h>
 #include <Texture.h>
+#include <gameSettings.h>
 
 
 /*********************************
@@ -125,10 +126,10 @@ int main() {
 	//load the character "slender" model 
 	Model myModel("C:/Users/luanb/source/repos/steampunk_plague_doctor/scene.gltf");
 
-	bool showSlender = false;
-	float time_aux = 10;
+	//bool showSlender = false;
+	//float time_aux = 10;
 	//this is the multiplier for slender appearence
-	float i = 1;
+	//float i = 1;
 
 	//const char* pathh = "C:/Users/luanb/source/repos/paper.png";
 	//const char* pathh = "C:/Users/luanb/source/repos/dont_look.png";
@@ -137,6 +138,7 @@ int main() {
 	lightingShader.use();
 	lightingShader.setInt("material.diffuse", 0);
 
+	gameSettings settings(myShader, camera, myModel);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -181,18 +183,16 @@ int main() {
 
 		/*----------SLENDER APPEARENCE-------------*/
 
-		//CLASSE GAME SETTINGS
-			//método APARIÇÃO SLENDER
-			//
-
 		//is used the time elapsed to count every second that 
 			//slender will appear or not
 		auto time = timeElapsed();
 		
 		cout << time << endl;
 
+		settings.showSlender(time);
+
 		//the slender will appear each "multiplier(i) * 10"
-		if (time >= time_aux) {
+		/*if (time >= time_aux) {
 			showSlender = !showSlender;
 			i += 1.0;
 			time_aux+= (i * 10);
@@ -211,7 +211,7 @@ int main() {
 			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 			myShader.setMat4("model", model);
 			myModel.Draw(myShader);
-		}
+		}*/
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
