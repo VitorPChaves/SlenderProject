@@ -21,11 +21,13 @@ public:
 				auto lastPosition1 = body1->getPosition();
 				auto lastPosition2 = body2->getPosition();
 
-				//TODO
+				/*body1->setPosition(body1->getPosition + body1->getMovement);
+				body2->setPosition(body2->getPosition + body2->getMovement);
 
 				if (intersection(*body1, *body2)) {
-
-				}
+					body1->setPosition(lastPosition1);
+					body2->setPosition(lastPosition2);
+				}*/
 			}
 		}
 	}
