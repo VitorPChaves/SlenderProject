@@ -11,8 +11,6 @@ void Camera::cameraProjection(Shader* shader) {
 
 	view = glm::lookAt(cameraP, cameraP + cameraF, cameraUp);
 
-	shader->use();
-
 	shader->setMat4("projection", projection);
 	shader->setMat4("view", view);
 }

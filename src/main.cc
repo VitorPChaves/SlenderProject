@@ -83,8 +83,6 @@ int main() {
 		groundShader.use();
 		groundShader.setVec3("viewpos", camera->cameraP);
 		groundShader.setFloat("material.shininess", 64.0f);
-		groundShader.setInt("material.diffuse", 0);
-		groundShader.setInt("material.ambient", 0);
 		camera->cameraProjection(&groundShader);
 		moonlight->lightImpact(groundShader, *camera);
 		flashlight->lightImpact(groundShader, *camera);
@@ -94,9 +92,10 @@ int main() {
 		treeShader.use();
 		treeShader.setVec3("viewpos", camera->cameraP);
 		treeShader.setFloat("material.shininess", 32.0f);
+		treeShader.setInt("material.diffuse", 0);
+		camera->cameraProjection(&treeShader);
 		moonlight->lightImpact(treeShader, *camera);
 		flashlight->lightImpact(treeShader, *camera);
-		camera->cameraProjection(&treeShader);
 		world->drawTrees(treeShader);
 
 		glfwSwapBuffers(window);

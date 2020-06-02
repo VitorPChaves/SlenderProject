@@ -95,7 +95,6 @@ void World::transformGround(Shader* shader) {
     model = rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = scale(model, glm::vec3(200.0f, 200.0f, 1.0f));
 
-    shader->use();
     shader->setMat4("model", model);
 }
 
@@ -108,7 +107,6 @@ void World::drawGround(Shader* shader) {
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    shader->use();
     transformGround(shader);
 
     glBindVertexArray(VAO);
@@ -127,7 +125,6 @@ void World::transformTree(Shader* shader, int x, int z) {
     model = scale(model, glm::vec3(treeScaleOffset));
     model = rotate(model, glm::radians(treeScaleOffset), glm::vec3(0.0f, 1.0f, 0.0f));
 
-    shader->use();
     shader->setMat4("model", model);
 }
 
@@ -141,8 +138,6 @@ void World::drawTrees(Shader& shader) {
         for (int z = -50; z < forestSize; z += treeSpacing) {
             int xOffset = rand() % 50;
             int zOffset = rand() % 50;
-
-            shader.use();
 
             transformTree(&shader, (x + xOffset), (z + zOffset));
             treeModel->Draw(shader);
