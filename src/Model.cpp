@@ -1,11 +1,12 @@
 #include <Model.h>
 #include <stb_image.h>
 
+// Constructor, expects a filepath to a 3D model.
 Model::Model(std::string const &path, bool gamma) : gammaCorrection(gamma) {
 	loadModel(path);
 }
 
-
+// Draws the model, and thus all its meshes.
 void Model::Draw(Shader shader) {
 
 	for (unsigned int i = 0; i < meshes.size(); i++)
@@ -13,6 +14,7 @@ void Model::Draw(Shader shader) {
 
 }
 
+// Loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
 void Model::loadModel(std::string const &path) {
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -26,6 +28,7 @@ void Model::loadModel(std::string const &path) {
 	processNode(scene->mRootNode, scene);
 }
 
+// Processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
 void Model::processNode(aiNode* node, const aiScene* scene) {
 
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
@@ -123,6 +126,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 	return Mesh(vertices, indices, textures);
 }
 
+// Checks all material textures of a given type and loads the textures if they're not loaded yet.
+// The required info is returned as a Texture struct.
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName) {
 	std::vector<Texture> textures;
 

@@ -1,12 +1,10 @@
-#define STB_IMAGE_IMPLEMENTATION
-
 #include <Shader.h>
 #include <Camera.h>
-#include <stb_image.h>
 #include <Moonlight.h>
 #include <Flashlight.h>
 #include <World.h>
 #include <Model.h>
+#include <Texture.h>
 
 GLFWwindow* window = nullptr;
 Camera* camera = new Camera();
@@ -14,6 +12,48 @@ Camera* camera = new Camera();
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	camera->mouse_callback(window, xpos, ypos);
 }
+
+// LUAN
+
+/*********************************
+NAO PODE OLHAR PRA ELE
+ELE APARECE CONFORME DETERMINADO EVENTO
+	*DEPENDENDO DO TIPO DE PISTA, ELE APARECE E NÃO DEIXA PEGAR
+OBVIO QUE VAI TER CRONOMETRO PRA ELE APARECER
+	*MAS ELE APARECE CONFORME PISTAS VÃO SENDO COLETADAS
+**********************************/
+
+// (O IDEAL É QUE O MAIN NÃO TENHA METODOS/FUNÇÕES DESSE TIPO)
+// (ELES PODEM SER COLOCADOS EM UM ARQUIVO OBJECTS.H E OBJECTS.CPP POR EXEMPLO / PODE INCLUIR SLENDER E PAPEL JUNTOS, SÓ PRA TIRAR DO MAIN MSM)
+
+double timeElapsed() {
+	return glfwGetTime();
+}
+
+// Vertices defined for the texture image be applied
+vector<float> verticesPaper() {
+	vector<float> _vertices = {
+		// positions          // colors           // texture coords
+		 0.1f,  0.2f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+		 0.1f, -0.2f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+		-0.1f, -0.2f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+		-0.1f,  0.2f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+	};
+
+	return _vertices;
+}
+
+// Indices for the vertices texture image be applied
+vector<int> indicesPaper() {
+	vector<int> _indices = {
+		0, 1, 3, // first triangle
+		1, 2, 3  // second triangle
+	};
+
+	return _indices;
+}
+
+// FIM LUAN
 
 bool initGL() {
 
@@ -47,7 +87,7 @@ bool initGL() {
 		return -1;
 	}
 
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 
 	glEnable(GL_BLEND);// you enable blending function
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -60,6 +100,8 @@ int main() {
 		return -1;
 	}
 
+// VITOR
+
 	World* world = new World();
 	world->initBuffers();
 
@@ -71,12 +113,57 @@ int main() {
 	world->diffuseMap = world->initTextures("../images/ground3.jpg");
 	world->specularMap = world->initTextures("../images/ground3.jpg");
 
+// FIM VITOR
+// LUAN
+
+	//Moonlight moonlight = Moonlight();
+	//Flashlight flashlight = Flashlight();
+
+	//shader relative to the paper
+	Shader paperShader("../shaders/vsPaperCoord.txt", "../shaders/vsPaperCoord.txt");
+
+	//shader relative to the slender character 
+	Shader slenderShader("../shaders/vsSuit.txt", "../shaders/fsSuit.txt");
+
+	// (BOTAR TUDO NO INITBUFFERS())
+
+	//vertices and indices receiving their coordinates 
+	//by the functions at the top of the code
+	vector<float> vertices = verticesPaper();
+	vector<int> indices = indicesPaper();
+
+	//texture object from the Texture class
+	Text objText(paperShader);
+	objText.Buffers(vertices, indices);
+	objText.Bind();
+
+	//importing the image from the directory and use him as a diffuse
+	world->diffuseMap = objText.TextureID("C:/Users/luanb/source/repos/paper.png");
+
+	//load the character "slender" model 
+	Model myModel("C:/Users/luanb/source/repos/steampunk_plague_doctor/scene.gltf");
+
+	// (ACHO MELHOR COLOCAR ESSAS VARIÁVEIS EM UM ARQUIVO SEPARADO JUNTO COM OS MÉTODOS LA DE CIMA)
+	bool showSlender = false;
+	float time_aux = 10;
+	//this is the multiplier for slender appearence
+	float i = 1;
+
+	//const char* pathh = "C:/Users/luanb/source/repos/paper.png";
+	//const char* pathh = "C:/Users/luanb/source/repos/dont_look.png";
+
+
+	paperShader.use();
+	paperShader.setInt("material.diffuse", 0);
+
+// FIM LUAN 
+
 	glEnable(GL_DEPTH_TEST);
 
 	do {
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+// VITOR
 		camera->input(window);
 
 		// Ground
@@ -97,6 +184,87 @@ int main() {
 		moonlight->lightImpact(treeShader, *camera);
 		flashlight->lightImpact(treeShader, *camera);
 		world->drawTrees(treeShader);
+
+// FIM VITOR
+// LUAN
+
+		// ALTERAR O OBJETO CAMERA PARA PONTEIRO***
+
+		camera->input(window);
+
+		/*----------LIGHTING PAPER-------------*/
+		paperShader.use();
+		paperShader.setVec3("viewPos", camera->cameraP);
+
+		paperShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+		paperShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+		paperShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+		paperShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		paperShader.setFloat("material.shininess", 64.0f);
+
+		// view/projection transformations
+		paperShader.use();
+
+		// (ISSO TUDO É IGUAL A camera->cameraProjection(&shader);)
+
+		camera->cameraProjection(&paperShader);
+
+		// (DAQUI)
+
+		// world transformation
+		glm::mat4 model = glm::mat4(1.0f);
+		paperShader.setMat4("model", model);
+
+		// bind diffuse map
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, world->diffuseMap);
+
+		// render the paper
+		paperShader.use();
+		objText.Bind();
+		//glBindVertexArray(vao);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		
+		// (ATÉ AQUI) (PODE SER UM METODO draw() EM UM ARQUIVO SEPARADO) (ESTÁ DESENHANDO OS PAPÉIS?)  
+
+
+		// (INCLUIR NO MESMO ARQUIVO DOS MÉTODOS LA DE CIMA)
+
+		/*----------SLENDER APPEARENCE-------------*/
+
+		//CLASSE GAME SETTINGS
+			//método APARIÇÃO SLENDER
+			//
+
+		//is used the time elapsed to count every second that 
+			//slender will appear or not
+		auto time = timeElapsed();
+		
+		cout << time << endl;
+
+		//the slender will appear each "multiplier(i) * 10"
+		if (time >= time_aux) {
+			showSlender = !showSlender;
+			i += 1.0;
+			time_aux+= (i * 10);
+			cout << "passs here" << endl;
+			cout << "passs here" << endl;
+			cout << "passs here" << endl;
+		}
+
+		if (showSlender) {
+			slenderShader.use();
+
+			camera->cameraProjection(&slenderShader);
+
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+			slenderShader.setMat4("model", model);
+			myModel.Draw(slenderShader);
+		}
+// FIM LUAN
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
