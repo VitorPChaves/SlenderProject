@@ -3,9 +3,9 @@
 void Flashlight::lightImpact(Shader& shader, Camera& camera) {
 	shader.setVec3("spotLight.position", camera.cameraP);
 	shader.setVec3("spotLight.direction", camera.cameraF);
-	shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(20.5f)));
-	shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(50.5f)));
 
+	shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(5.5f)));
+	shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(8.75f)));
 
 	shader.setVec3("spotLight.ambient", 0.1f, 0.1f, 0.1f);
 	shader.setVec3("spotLight.diffuse", 0.8f, 0.8f, 0.8f);

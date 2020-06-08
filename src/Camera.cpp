@@ -1,7 +1,7 @@
 #include <Camera.h>
 #include <Windows.h>
 
-Camera::Camera() 
+Camera::Camera() : cameraBody(BoundingBox(glm::vec3(0), glm::vec3(0)), false) 
 {
 	projection = glm::perspective(glm::radians(fov), 1024.0f / 768.0f, 0.1f, 100.0f);
 }
@@ -23,18 +23,19 @@ void Camera::input(GLFWwindow* window) {
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	cameraP.y = 2.0f;
+	cameraP = cameraBody.getPosition();
+	cameraP.y = 0.0f;
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cameraP += cameraSpeed * cameraFonXZ;
+		cameraBody.setMovement(cameraSpeed * cameraF);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cameraP -= cameraSpeed * cameraFonXZ;
+		cameraBody.setMovement(-cameraSpeed * cameraF);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		cameraP += glm::normalize(glm::cross(cameraFonXZ, cameraUp)) * cameraSpeed;
+		cameraBody.setMovement(glm::normalize(glm::cross(cameraF, cameraUp)) * cameraSpeed);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		cameraP -= glm::normalize(glm::cross(cameraFonXZ, cameraUp)) * cameraSpeed;
+		cameraBody.setMovement(- glm::normalize(glm::cross(cameraF, cameraUp)) * cameraSpeed);
 
 	// sets running to false and returns to normal speed
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
@@ -59,6 +60,7 @@ void Camera::input(GLFWwindow* window) {
 				runningEndTime = glfwGetTime();
 			}
 		}
+
 	}
 
 }

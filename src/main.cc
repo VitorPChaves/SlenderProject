@@ -5,16 +5,21 @@
 #include <World.h>
 #include <Model.h>
 #include <Texture.h>
+#include <BoundingBox.h>
+#include <CollidingManager.h>
+
 
 GLFWwindow* window = nullptr;
 Camera* camera = new Camera();
+
+CollidingManager collidingManager;
+
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	camera->mouse_callback(window, xpos, ypos);
 }
 
 // LUAN
-
 /*********************************
 NAO PODE OLHAR PRA ELE
 ELE APARECE CONFORME DETERMINADO EVENTO
@@ -87,12 +92,13 @@ bool initGL() {
 		return -1;
 	}
 
-	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	glEnable(GL_BLEND);// you enable blending function
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	return true;
 }
+
 
 int main() {
 
@@ -122,9 +128,6 @@ int main() {
 	//shader relative to the paper
 	Shader paperShader("../shaders/vsPaperCoord.txt", "../shaders/vsPaperCoord.txt");
 
-	//shader relative to the slender character 
-	Shader slenderShader("../shaders/vsSuit.txt", "../shaders/fsSuit.txt");
-
 	// (BOTAR TUDO NO INITBUFFERS())
 
 	//vertices and indices receiving their coordinates 
@@ -140,9 +143,6 @@ int main() {
 	//importing the image from the directory and use him as a diffuse
 	world->diffuseMap = objText.TextureID("C:/Users/luanb/source/repos/paper.png");
 
-	//load the character "slender" model 
-	Model myModel("C:/Users/luanb/source/repos/steampunk_plague_doctor/scene.gltf");
-
 	// (ACHO MELHOR COLOCAR ESSAS VARIÁVEIS EM UM ARQUIVO SEPARADO JUNTO COM OS MÉTODOS LA DE CIMA)
 	bool showSlender = false;
 	float time_aux = 10;
@@ -156,16 +156,21 @@ int main() {
 	paperShader.use();
 	paperShader.setInt("material.diffuse", 0);
 
-// FIM LUAN 
+	Shader myShader("../shaders/vsSuit.txt", "../shaders/fsSuit.txt");
+
+	Model myModel("../images/scene.gltf");
+	BoundingBox aa(myModel.meshes);
+	CollidableBody aabody(aa, true);
+	collidingManager.addBody(&camera->cameraBody);
+	collidingManager.addBody(&aabody);
 
 	glEnable(GL_DEPTH_TEST);
 
 	do {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-// VITOR
-		camera->input(window);
 
+// VITOR
 		// Ground
 		groundShader.use();
 		groundShader.setVec3("viewpos", camera->cameraP);
@@ -188,10 +193,6 @@ int main() {
 // FIM VITOR
 // LUAN
 
-		// ALTERAR O OBJETO CAMERA PARA PONTEIRO***
-
-		camera->input(window);
-
 		/*----------LIGHTING PAPER-------------*/
 		paperShader.use();
 		paperShader.setVec3("viewPos", camera->cameraP);
@@ -209,11 +210,21 @@ int main() {
 		// (ISSO TUDO É IGUAL A camera->cameraProjection(&shader);)
 
 		camera->cameraProjection(&paperShader);
+		
+		myShader.use();
+		myShader.setVec3("viewPos", camera->cameraP);
+		
+		moonlight->lightImpact(myShader, *camera);
+		flashlight->lightImpact(myShader, *camera);
+		
+		collidingManager.moveBodies();
+		camera->input(window);
 
 		// (DAQUI)
 
 		// world transformation
 		glm::mat4 model = glm::mat4(1.0f);
+
 		paperShader.setMat4("model", model);
 
 		// bind diffuse map
@@ -254,15 +265,14 @@ int main() {
 		}
 
 		if (showSlender) {
-			slenderShader.use();
+			myShader.use();
 
-			camera->cameraProjection(&slenderShader);
+			camera->cameraProjection(&myShader);
 
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-			slenderShader.setMat4("model", model);
-			myModel.Draw(slenderShader);
+			model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+			myShader.setMat4("model", model);
+			glEnable(GL_FRAMEBUFFER_SRGB);
+			myModel.Draw(myShader);
 		}
 // FIM LUAN
 
@@ -274,6 +284,7 @@ int main() {
 	world->~World();
 	glDeleteProgram(groundShader.shaderProgram);
 	glDeleteProgram(treeShader.shaderProgram);
+	glDeleteProgram(myShader.shaderProgram);
 
 	glfwTerminate();
 

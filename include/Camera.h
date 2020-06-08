@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Shader.h>
+#include <CollidableBody.h>
 
 class Camera {
 public:
@@ -27,9 +28,11 @@ public:
 
 	float runningStartTime;
 	float runningEndTime = glfwGetTime();
+	CollidableBody cameraBody;
 
 	Camera();
 	void cameraProjection(Shader* shader);
+
 	void input(GLFWwindow* window);
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 };
