@@ -8,8 +8,7 @@
 #include <BoundingBox.h>
 #include <CollidingManager.h>
 
-//luan new
-
+//moving to the new branch
 
 GLFWwindow* window = nullptr;
 Camera* camera = new Camera();
