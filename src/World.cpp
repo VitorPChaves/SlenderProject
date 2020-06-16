@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 World::World() {
-    treeModel = std::make_unique<Model>("C:/Users/Vitor/Documents/SlenderProject/images/Tree2/Tree.obj");
+    treeModel = std::make_unique<Model>("../images/Tree2/Tree.obj");
 }
 
 World::~World() {

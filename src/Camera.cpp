@@ -24,7 +24,7 @@ void Camera::input(GLFWwindow* window) {
 	lastFrame = currentFrame;
 
 	cameraP = cameraBody.getPosition();
-	cameraP.y = 0.0f;
+	cameraP.y = 2.0f;
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);

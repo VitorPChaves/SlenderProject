@@ -8,13 +8,10 @@
 #include <BoundingBox.h>
 #include <CollidingManager.h>
 
-//moving to the new branch
-
 GLFWwindow* window = nullptr;
 Camera* camera = new Camera();
 
 CollidingManager collidingManager;
-
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	camera->mouse_callback(window, xpos, ypos);
@@ -127,7 +124,7 @@ int main() {
 	//Flashlight flashlight = Flashlight();
 
 	//shader relative to the paper
-	Shader paperShader("../shaders/vsPaperCoord.txt", "../shaders/vsPaperCoord.txt");
+	Shader paperShader("../shaders/vsPaperCoord.txt", "../shaders/fsPaperCoord.txt");
 
 	// (BOTAR TUDO NO INITBUFFERS())
 
@@ -142,7 +139,7 @@ int main() {
 	objText.Bind();
 
 	//importing the image from the directory and use him as a diffuse
-	world->diffuseMap = objText.TextureID("C:/Users/luanb/source/repos/paper.png");
+	world->diffuseMap = objText.TextureID("../images/paper.png");
 
 	// (ACHO MELHOR COLOCAR ESSAS VARIÁVEIS EM UM ARQUIVO SEPARADO JUNTO COM OS MÉTODOS LA DE CIMA)
 	bool showSlender = false;
@@ -228,14 +225,13 @@ int main() {
 
 		paperShader.setMat4("model", model);
 
-		// bind diffuse map
+		//bind diffuse map
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, world->diffuseMap);
 
 		// render the paper
 		paperShader.use();
 		objText.Bind();
-		//glBindVertexArray(vao);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		
 		// (ATÉ AQUI) (PODE SER UM METODO draw() EM UM ARQUIVO SEPARADO) (ESTÁ DESENHANDO OS PAPÉIS?)  
@@ -270,6 +266,7 @@ int main() {
 
 			camera->cameraProjection(&myShader);
 
+			model= glm::translate(model, glm::vec3(2.0f,2.0f,2.0f));
 			model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 			myShader.setMat4("model", model);
 			glEnable(GL_FRAMEBUFFER_SRGB);

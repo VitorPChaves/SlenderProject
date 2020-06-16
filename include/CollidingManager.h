@@ -6,7 +6,7 @@ public:
 	void addBody(CollidableBody* newbody){
 		bodies.push_back(newbody);
 	}
-	bool moveBodies() {
+	void moveBodies() {
 		for (int i = 0; i < bodies.size(); ++i) {
 			auto body1 = bodies[i];
 
@@ -20,16 +20,15 @@ public:
 				auto lastPosition1 = body1->getPosition();
 				auto lastPosition2 = body2->getPosition();
 
-				/*body1->setPosition(body1->getPosition + body1->getMovement);
-				body2->setPosition(body2->getPosition + body2->getMovement);
+				body1->setPosition(body1->getPosition() + body1->getMovement());
+				body2->setPosition(body2->getPosition() + body2->getMovement());
 
 				if (intersection(*body1, *body2)) {
 					body1->setPosition(lastPosition1);
 					body2->setPosition(lastPosition2);
-				}*/
+				}
 			}
 		}
-		return true;
 	}
 	bool intersection(const CollidableBody& body1, const CollidableBody& body2 ) {
 		auto& a = body1.getBoundingBox();
