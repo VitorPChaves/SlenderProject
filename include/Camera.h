@@ -1,15 +1,14 @@
 #pragma once
-
 #include <Shader.h>
 #include <CollidableBody.h>
 
 class Camera {
 public:
-	glm::vec3 cameraP = glm::vec3(0.0f, 2.0f, 1.0f);
-	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 cameraF = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 cameraS = glm::vec3(1.0f, 0.0f, 0.0f);
-	glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 cameraP;
+	glm::vec3 cameraUp;
+	glm::vec3 cameraF;
+	glm::vec3 cameraS;
+	glm::vec3 worldUp;
 
 	glm::mat4 view;
 	glm::mat4 projection;

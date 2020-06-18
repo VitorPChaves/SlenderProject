@@ -1,6 +1,6 @@
 #include <Model.h>
 
-//#DEFINE_STB_IMAGE_IMPLEMENTATION
+//#DEFINE STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 // Constructor, expects a filepath to a 3D model.

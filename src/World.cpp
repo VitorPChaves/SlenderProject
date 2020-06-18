@@ -1,7 +1,8 @@
 #include <World.h>
-#include <Model.h>
-#include <stb_image.h>
 #include <stdlib.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 World::World() {
     treeModel = std::make_unique<Model>("../images/Tree2/Tree.obj");
@@ -45,7 +46,6 @@ unsigned int World::initTextures(char const* path) {
     }
 
     stbi_image_free(data);
-
 
     return texture;
 }
@@ -138,7 +138,7 @@ void World::drawTrees(Shader& shader) {
         for (int z = -50; z < forestSize; z += treeSpacing) {
             int xOffset = rand() % 50;
             int zOffset = rand() % 50;
-
+            
             transformTree(&shader, (x + xOffset), (z + zOffset));
             treeModel->Draw(shader);
         }

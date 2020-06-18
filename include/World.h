@@ -1,5 +1,8 @@
-#include <Shader.h>
+#pragma once
 #include <Camera.h>
+#include <Model.h>
+#include <CollidingManager.h>
+
 
 class World {
 
@@ -8,6 +11,7 @@ class World {
 		int treeSpacing = 10;
 		unsigned int texture;
 		unsigned int VBO, VAO, EBO, diffuseMap, specularMap;
+		std::unique_ptr<class Model> treeModel;
 
 		World();
 		~World();
@@ -19,5 +23,4 @@ class World {
 		void drawTrees(Shader& shader);
 
 	private:
-		std::unique_ptr<class Model> treeModel;
 };

@@ -19,7 +19,7 @@ public:
 	glm::vec3 getMovement() {
 		return movement;
 	}
-	void setMovement(glm::vec3& newmovement) {
+    void setMovement(glm::vec3& newmovement) {
 		movement = newmovement;
 	}
 	BoundingBox getBoundingBox() const {
@@ -34,5 +34,5 @@ private:
 	BoundingBox bb;
 	glm::vec3 movement = glm::vec3(0);
 	glm::vec3 position = glm::vec3(0);
-	bool statical = true;
+	bool statical = false;
 };

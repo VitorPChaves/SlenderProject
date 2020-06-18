@@ -3,6 +3,13 @@
 
 Camera::Camera() : cameraBody(BoundingBox(glm::vec3(0), glm::vec3(0)), false) 
 {
+	cameraP = glm::vec3(0.0f, 0.0f, 1.0f);
+	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	cameraF = glm::vec3(0.0f, 0.0f, -1.0f);
+	cameraS = glm::vec3(1.0f, 0.0f, 0.0f);
+	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	cameraBody.setPosition(cameraP);
 	projection = glm::perspective(glm::radians(fov), 1024.0f / 768.0f, 0.1f, 100.0f);
 }
 
@@ -16,7 +23,6 @@ void Camera::cameraProjection(Shader* shader) {
 }
 
 void Camera::input(GLFWwindow* window) {
-	const auto cameraFonXZ = glm::normalize(glm::vec3(cameraF.x, 0.0f, cameraF.z));
 	float currentFrame = glfwGetTime();
 	float cameraSpeed = speed * deltaTime;
 
@@ -25,17 +31,27 @@ void Camera::input(GLFWwindow* window) {
 
 	cameraP = cameraBody.getPosition();
 	cameraP.y = 2.0f;
+	//cameraBody.setMovement(glm::vec3(0));
+
+	glm::vec3 movDirection = glm::vec3(0);
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cameraBody.setMovement(cameraSpeed * cameraF);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cameraBody.setMovement(-cameraSpeed * cameraF);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		cameraBody.setMovement(glm::normalize(glm::cross(cameraF, cameraUp)) * cameraSpeed);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		cameraBody.setMovement(- glm::normalize(glm::cross(cameraF, cameraUp)) * cameraSpeed);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		movDirection += cameraF;
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		movDirection -= cameraF;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		movDirection += glm::normalize(glm::cross(cameraF, cameraUp));
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		movDirection -= glm::normalize(glm::cross(cameraF, cameraUp));
+	}
+	if (glm::length(movDirection) > 0)
+		movDirection = glm::normalize(movDirection);
+	cameraBody.setMovement(movDirection * cameraSpeed);
 
 	// sets running to false and returns to normal speed
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
