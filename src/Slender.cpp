@@ -29,21 +29,22 @@ void Slender::slenderMechanics(Shader& slenderShader) {
 		showSlender = !showSlender;
 		i += 1.0;
 		time_aux += (i * 10);
+		/*std::cout << "passs here" << std::endl;
 		std::cout << "passs here" << std::endl;
-		std::cout << "passs here" << std::endl;
-		std::cout << "passs here" << std::endl;
+		std::cout << "passs here" << std::endl;*/
 	}
 
 	if (showSlender) {
+		//std::cout << "AAAA" << std::endl;
+
 		slenderShader.use();
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = translate(model, glm::vec3(2.0f, 2.0f, 2.0f));
-		model = scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		model = translate(model, glm::vec3(-4.5f, 1.2f, -4.0f));
+		model = scale(model, glm::vec3(0.9f, 0.9f, 0.9f));
 
 		slenderShader.setMat4("model", model);
-
-		slenderModel->Draw(slenderShader);
 		glEnable(GL_FRAMEBUFFER_SRGB);
+		slenderModel->Draw(slenderShader);
 	}
 }

@@ -5,11 +5,11 @@
 
 // Constructor, expects a filepath to a 3D model.
 Model::Model(std::string const &path, bool gamma) : gammaCorrection(gamma) {
-	loadModel(path);
+	loadModel(path);	
 }
 
 // Draws the model, and thus all its meshes.
-void Model::Draw(Shader shader) {
+void Model::Draw(Shader& shader) {
 
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i].Draw(shader);

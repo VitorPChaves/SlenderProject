@@ -18,7 +18,7 @@ public:
 
 	Model(std::string const &path, bool gamma = false);
 
-	void Draw(Shader shader);
+	void Draw(Shader& shader);
 
 private:
 

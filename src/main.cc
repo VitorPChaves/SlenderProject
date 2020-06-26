@@ -50,7 +50,7 @@ bool initGL() {
 		return -1;
 	}
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
 
 	glEnable(GL_BLEND);// you enable blending function
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -101,7 +101,6 @@ int main() {
 		flashlight->lightImpact(groundShader, *camera);
 		world->drawGround(&groundShader);
 
-
 		// Trees
 		treeShader.use();
 		treeShader.setVec3("viewpos", camera->cameraP);
@@ -124,6 +123,7 @@ int main() {
 		paperShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 		paperShader.setFloat("material.shininess", 64.0f);
 		paperShader.setInt("material.diffuse", 0);
+		//translate the paper
 		camera->cameraProjection(&paperShader);
 		paper->drawPapers(&paperShader);
 
@@ -132,11 +132,15 @@ int main() {
 
 		// Slender
 		slenderShader.use();
+		camera->cameraProjection(&slenderShader);
 		slenderShader.setVec3("viewPos", camera->cameraP);
 		moonlight->lightImpact(slenderShader, *camera);
 		flashlight->lightImpact(slenderShader, *camera);
 		slender->slenderMechanics(slenderShader);
 
+		/*cout << "passou akeeeeeee" << endl;
+		cout << "passou akeeeeeee" << endl;
+		cout << "passou akeeeeeee" << endl;*/
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

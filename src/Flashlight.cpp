@@ -10,7 +10,7 @@ void Flashlight::lightImpact(Shader& shader, Camera& camera) {
 	shader.setVec3("spotLight.ambient", 0.1f, 0.1f, 0.1f);
 	shader.setVec3("spotLight.diffuse", 0.8f, 0.8f, 0.8f);
 	shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-	shader.setFloat("spotLight.constant", 1.0f);
+	shader.setFloat("spotLight.constant", 2.0f);
 	shader.setFloat("spotLight.linear", 0.09f);
 	shader.setFloat("spotLight.quadratic", 0.032f);
 }
