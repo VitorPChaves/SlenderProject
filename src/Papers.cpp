@@ -47,6 +47,8 @@ void Papers::initBuffers() {
 void Papers::drawPapers(Shader* paperShader) {
 	glm::mat4 model = glm::mat4(1.0f);
 
+	//FINISH
+	model = translate(model, glm::vec3(rand(), rand(), rand()));
 	paperShader->setMat4("model", model);
 
 	//bind diffuse map

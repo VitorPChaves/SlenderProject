@@ -68,6 +68,8 @@ int main() {
 	Flashlight* flashlight = new Flashlight();
 	World* world = new World();
 	Papers* paper = new Papers();
+	Papers* paper_dont_look = new Papers();
+	Papers* paper_he_can_see = new Papers();
 	Slender* slender = new Slender();
 
 	Shader groundShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
@@ -80,6 +82,8 @@ int main() {
 	world->diffuseMap = world->initTextures("../images/ground3.jpg");
 	world->specularMap = world->initTextures("../images/ground3.jpg");
 	paper->diffuseMap = world->initTextures("../images/paper.png");
+	paper_dont_look->diffuseMap = world->initTextures("../images/dont_look.png");
+	paper_he_can_see->diffuseMap = world->initTextures("../images/he_can_see.png");
 
 	BoundingBox aa(slender->slenderModel->meshes);
 	CollidableBody aabody(aa, false);
@@ -114,6 +118,7 @@ int main() {
 		//CollidableBody boxBody(box, true);
 		//collidingManager.addBody(&boxBody);
 
+
 		// Paper
 		paperShader.use();
 		paperShader.setVec3("viewPos", camera->cameraP);
@@ -123,8 +128,10 @@ int main() {
 		paperShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 		paperShader.setFloat("material.shininess", 64.0f);
 		paperShader.setInt("material.diffuse", 0);
+		
 		//translate the paper
 		camera->cameraProjection(&paperShader);
+		//VOLTAR A PARTIT DAQUIIII
 		paper->drawPapers(&paperShader);
 
 		collidingManager->moveBodies();

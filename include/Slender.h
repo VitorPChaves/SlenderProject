@@ -2,6 +2,7 @@
 #include <Shader.h>
 #include <Camera.h>
 #include <Model.h>
+#include <time.h>
 
 class Slender {
 public:
@@ -12,6 +13,8 @@ public:
 	void slenderMechanics(Shader& slenderShader);
 
 	double timeElapsed();
+
+	float position();
 
 private:
 	Camera* camera;
