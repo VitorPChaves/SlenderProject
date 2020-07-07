@@ -22,16 +22,12 @@ double Slender::timeElapsed() {
 void Slender::slenderMechanics(Shader& slenderShader) {
 	auto time = timeElapsed();
 
-	std::cout << time << std::endl;
 
 	//the slender will appear each "multiplier(i) * 10"
 	if (time >= time_aux) {
 		showSlender = !showSlender;
 		i += 1.0;
 		time_aux += (i * 10);
-		std::cout << "passs here" << std::endl;
-		std::cout << "passs here" << std::endl;
-		std::cout << "passs here" << std::endl;
 	}
 
 	if (showSlender) {

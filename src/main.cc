@@ -9,6 +9,7 @@
 #include <CollidingManager.h>
 #include <Papers.h>
 #include <Slender.h>
+#include <Tree.h>
 
 GLFWwindow* window = nullptr;
 Camera* camera = new Camera();
@@ -69,7 +70,8 @@ int main() {
 	World* world = new World();
 	Papers* paper = new Papers();
 	Slender* slender = new Slender();
-
+	Tree* tree = new Tree();
+	
 	Shader groundShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
 	Shader treeShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
 	Shader paperShader("../shaders/vsPaperCoord.txt", "../shaders/fsPaperCoord.txt");
@@ -80,11 +82,13 @@ int main() {
 	world->diffuseMap = world->initTextures("../images/ground3.jpg");
 	world->specularMap = world->initTextures("../images/ground3.jpg");
 	paper->diffuseMap = world->initTextures("../images/paper.png");
+	vector<glm::vec3> treePositions = tree->getTreePositions();
 
-	BoundingBox aa(slender->slenderModel->meshes);
-	CollidableBody aabody(aa, false);
+	BoundingBox slenderBox(slender->slenderModel->meshes);
+	CollidableBody slenderBody(slenderBox, false);
 	collidingManager->addBody(&camera->cameraBody);
-	collidingManager->addBody(&aabody);
+
+	tree->forEachTree([](CollidableBody& body) { collidingManager->addBody(&body); });
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -110,11 +114,8 @@ int main() {
 		camera->cameraProjection(&treeShader);
 		moonlight->lightImpact(treeShader, *camera);
 		flashlight->lightImpact(treeShader, *camera);
-		world->drawTrees(treeShader);
-		//BoundingBox box(world->treeModel->meshes);
-		//CollidableBody boxBody(box, true);
-		//collidingManager.addBody(&boxBody);
-
+		tree->drawTrees(treeShader);
+		
 		// Paper
 		paperShader.use();
 		paperShader.setVec3("viewPos", camera->cameraP);
@@ -127,17 +128,20 @@ int main() {
 		camera->cameraProjection(&paperShader);
 		paper->drawPapers(&paperShader);
 
-		collidingManager->moveBodies();
+		
+		collidingManager->checkCollision();
 		camera->input(window);
+		collidingManager->moveBodies();
+
 
 		// Slender
-		slenderShader.use();
+		/*slenderShader.use();
 		slenderShader.setVec3("viewPos", camera->cameraP);
 		moonlight->lightImpact(slenderShader, *camera);
 		flashlight->lightImpact(slenderShader, *camera);
-		slender->slenderMechanics(slenderShader);
+		slender->slenderMechanics(slenderShader);*/
 
-
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 

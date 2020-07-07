@@ -14,8 +14,19 @@ public:
 		return position;
 	}
 	void setPosition(glm::vec3& newposition) {
+		if(statical == true)
+		{
+			lastPosition = newposition;
+		}
+		else {
+			lastPosition = position;
+		}
 		position = newposition;
 	}
+	void restoreLastPosition() {
+		position = lastPosition;
+	}
+
 	glm::vec3 getMovement() {
 		return movement;
 	}
@@ -34,5 +45,6 @@ private:
 	BoundingBox bb;
 	glm::vec3 movement = glm::vec3(0);
 	glm::vec3 position = glm::vec3(0);
+	glm::vec3 lastPosition = glm::vec3(0);
 	bool statical = false;
 };
