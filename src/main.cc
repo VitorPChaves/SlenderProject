@@ -57,6 +57,12 @@ bool initGL() {
 	return true;
 }
 
+float position() {
+	srand(time(NULL));
+	float pos = (rand() % 3);
+
+	return pos;
+}
 
 int main() {
 
@@ -79,11 +85,14 @@ int main() {
 
 	world->initBuffers();
 	paper->initBuffers();
+	paper_dont_look->initBuffers();
+	paper_he_can_see->initBuffers();
+
 	world->diffuseMap = world->initTextures("../images/ground3.jpg");
 	world->specularMap = world->initTextures("../images/ground3.jpg");
 	paper->diffuseMap = world->initTextures("../images/paper.png");
 	paper_dont_look->diffuseMap = world->initTextures("../images/dont_look.png");
-	paper_he_can_see->diffuseMap = world->initTextures("../images/he_can_see.png");
+	paper_he_can_see->diffuseMap = world->initTextures("../images/teste_scan.png");
 
 	BoundingBox aa(slender->slenderModel->meshes);
 	CollidableBody aabody(aa, false);
@@ -91,6 +100,10 @@ int main() {
 	collidingManager->addBody(&aabody);
 
 	glEnable(GL_DEPTH_TEST);
+
+	float xPosition = position();
+	float xPosition2 = position();
+	float xPosition3 = position();
 
 	do {
 
@@ -120,19 +133,14 @@ int main() {
 
 
 		// Paper
-		paperShader.use();
-		paperShader.setVec3("viewPos", camera->cameraP);
-		paperShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-		paperShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-		paperShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-		paperShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-		paperShader.setFloat("material.shininess", 64.0f);
-		paperShader.setInt("material.diffuse", 0);
-		
-		//translate the paper
-		camera->cameraProjection(&paperShader);
-		//VOLTAR A PARTIT DAQUIIII
-		paper->drawPapers(&paperShader);
+		paper->setShaderCharacteristics(&paperShader, camera);
+		paper->drawPapers(&paperShader, camera, xPosition);
+
+		paper_dont_look->setShaderCharacteristics(&paperShader, camera);
+		paper_dont_look->drawPapers(&paperShader, camera, xPosition2);
+
+		paper_he_can_see->setShaderCharacteristics(&paperShader, camera);
+		paper_he_can_see->drawPapers(&paperShader, camera, xPosition3);
 
 		collidingManager->moveBodies();
 		camera->input(window);

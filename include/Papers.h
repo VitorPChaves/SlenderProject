@@ -1,5 +1,7 @@
 #pragma once
 #include <Shader.h>
+#include <time.h>
+#include <camera.h>
 
 class Papers {
 public:
@@ -7,14 +9,12 @@ public:
 
 	void initBuffers();
 
-	void drawPapers(Shader* paperShader);
+	void setShaderCharacteristics(Shader* shader, Camera* camera);
 
+	void drawPapers(Shader* paperShader, Camera* camera, float xPosition);
+
+	float position();
 
 private:
 	unsigned int VBO, VAO, EBO;
-
-	//const char* pathh = "C:/Users/luanb/source/repos/paper.png";
-	//const char* pathh = "C:/Users/luanb/source/repos/dont_look.png";
-
-
 };
