@@ -101,7 +101,7 @@ int main() {
 
 	glEnable(GL_DEPTH_TEST);
 
-	float xPosition = position();
+	float xPosition = 2.6f;//position();
 	float xPosition2 = position();
 	float xPosition3 = position();
 

@@ -44,6 +44,15 @@ void Papers::initBuffers() {
     glEnableVertexAttribArray(2);
 }
 
+void Papers::collectClue(float pos, unsigned int func_vao, Camera* camera) {
+	glm::vec3 position = glm::vec3(pos, 0.3f, 0.0f);
+
+	if (glm::distance(camera->cameraP, position) <= 2.0f) {
+		shouldDraw = false;
+		//std::cout << "CLUE COLLECTED" << std::endl;
+	}
+}
+
 float Papers::position() {
 	srand(time(NULL));
 	float pos = (rand() % 10);
@@ -66,8 +75,10 @@ void Papers::setShaderCharacteristics(Shader* paperShader, Camera* camera) {
 }
 
 void Papers::drawPapers(Shader* paperShader, Camera* camera, float xPosition) {
-	
-	//float zPosition = position();
+
+	collectClue(xPosition, VAO, camera);
+
+	if (!shouldDraw) return;
 
 	paperShader->use();
 
@@ -78,18 +89,11 @@ void Papers::drawPapers(Shader* paperShader, Camera* camera, float xPosition) {
 	model = rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0f));
 	paperShader->setMat4("model", model);
 
-	//if (!aaaa)
-	{
-		//bind diffuse map
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, diffuseMap);
+	//bind diffuse map
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
-		// render the paper
-		//paperShader->use();
-
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		//glBindVertexArray(0);
-	}
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//glBindVertexArray(0);
 }
-

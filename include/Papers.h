@@ -15,6 +15,9 @@ public:
 
 	float position();
 
+	void collectClue(float pos, unsigned int vao, Camera* camera);
+
 private:
 	unsigned int VBO, VAO, EBO;
+	bool shouldDraw = true;
 };
