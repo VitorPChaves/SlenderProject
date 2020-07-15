@@ -1,7 +1,7 @@
 #include <Camera.h>
 #include <Windows.h>
 
-Camera::Camera() : cameraBody(BoundingBox(glm::vec3(0), glm::vec3(0)), false) 
+Camera::Camera() : cameraBody(BoundingBox(glm::vec3(-0.15), glm::vec3(0.15)), false)
 {
 	cameraP = glm::vec3(0.0f, 0.0f, 1.0f);
 	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -28,11 +28,10 @@ void Camera::input(GLFWwindow* window) {
 
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
-
 	cameraP = cameraBody.getPosition();
 	cameraP.y = 2.0f;
 	//cameraBody.setMovement(glm::vec3(0));
-
+	//std::cout << cameraP.x << ',' << cameraP.z << std::endl;
 	glm::vec3 movDirection = glm::vec3(0);
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -51,7 +50,7 @@ void Camera::input(GLFWwindow* window) {
 	}
 	if (glm::length(movDirection) > 0)
 		movDirection = glm::normalize(movDirection);
-	cameraBody.setMovement(movDirection * cameraSpeed);
+	cameraBody.setMovement((movDirection * cameraSpeed));
 
 	// sets running to false and returns to normal speed
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {

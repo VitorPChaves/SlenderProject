@@ -39,6 +39,7 @@ void Slender::slenderMechanics(Shader& slenderShader) {
 		showSlender = !showSlender;
 		i += 1.0;
 		time_aux += (i * 10);
+
 		/*std::cout << "passs here" << std::endl;
 		std::cout << "passs here" << std::endl;
 		std::cout << "passs here" << std::endl;*/
