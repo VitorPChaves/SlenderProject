@@ -44,12 +44,12 @@ void Papers::initBuffers() {
     glEnableVertexAttribArray(2);
 }
 
-void Papers::collectClue(float pos, unsigned int func_vao, Camera* camera) {
-	glm::vec3 position = glm::vec3(pos, 0.3f, 0.0f);
+void Papers::collectClue(glm::vec3& position, unsigned int func_vao, Camera* camera) {
+	//glm::vec3 position = glm::vec3(pos, 0.3f, 0.0f);
 
-	if (glm::distance(camera->cameraP, position) <= 2.0f) {
+	if (glm::distance(camera->cameraP, position)  <= 2.0f) {
 		shouldDraw = false;
-		//std::cout << "CLUE COLLECTED" << std::endl;
+		std::cout << "CLUE COLLECTED " << position.x << " " << position.y << " " << position.z << std::endl;
 	}
 }
 
@@ -74,18 +74,20 @@ void Papers::setShaderCharacteristics(Shader* paperShader, Camera* camera) {
 	paperShader->setInt("material.diffuse", 0);
 }
 
-void Papers::drawPapers(Shader* paperShader, Camera* camera, float xPosition) {
+void Papers::drawPapers(Shader* paperShader, Camera* camera, glm::vec3& paperPos) {
 
-	collectClue(xPosition, VAO, camera);
+	collectClue(paperPos, VAO, camera);
 
 	if (!shouldDraw) return;
+
+	std::cout << "PAAASOU AKEEE" << std::endl;
 
 	paperShader->use();
 
 	camera->cameraProjection(paperShader);
 
 	glm::mat4 model = glm::mat4(1.0f);
-	model = translate(model, glm::vec3(xPosition, 0.3f, 0.0f));
+	model = translate(model, paperPos);
 	model = rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0f));
 	paperShader->setMat4("model", model);
 

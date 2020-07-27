@@ -75,9 +75,7 @@ void Camera::input(GLFWwindow* window) {
 				runningEndTime = glfwGetTime();
 			}
 		}
-
 	}
-
 }
 
 void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {

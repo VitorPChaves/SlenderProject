@@ -11,11 +11,11 @@ public:
 
 	void setShaderCharacteristics(Shader* shader, Camera* camera);
 
-	void drawPapers(Shader* paperShader, Camera* camera, float xPosition);
+	void drawPapers(Shader* paperShader, Camera* camera, glm::vec3& paperPos);
 
 	float position();
 
-	void collectClue(float pos, unsigned int vao, Camera* camera);
+	void collectClue(glm::vec3& pos, unsigned int vao, Camera* camera);
 
 private:
 	unsigned int VBO, VAO, EBO;

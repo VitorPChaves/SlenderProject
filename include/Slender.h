@@ -23,5 +23,4 @@ private:
 	float time_aux = 10;
 	//this is the multiplier for slender appearence
 	float i = 1;
-
 };

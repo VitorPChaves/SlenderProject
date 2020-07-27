@@ -51,7 +51,7 @@ bool initGL() {
 		return -1;
 	}
 
-	glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	glEnable(GL_BLEND);// you enable blending function
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -93,8 +93,8 @@ int main() {
 	world->diffuseMap = world->initTextures("../images/ground3.jpg");
 	world->specularMap = world->initTextures("../images/ground3.jpg");
 	paper->diffuseMap = world->initTextures("../images/paper.png");
-	paper_dont_look->diffuseMap = world->initTextures("../images/dont_look.png");
-	paper_he_can_see->diffuseMap = world->initTextures("../images/teste_scan.png");
+	paper_dont_look->diffuseMap = world->initTextures("../images/dont_look2.png");
+	paper_he_can_see->diffuseMap = world->initTextures("../images/he_can_see2.png");
 
 	vector<glm::vec3> treePositions = tree->getTreePositions();
 
@@ -106,9 +106,9 @@ int main() {
 
 	glEnable(GL_DEPTH_TEST);
 
-	float xPosition = 2.6f;//position();
-	float xPosition2 = position();
-	float xPosition3 = position();
+	glm::vec3 clue1 = tree->feedbackPaperPosition();
+	glm::vec3 clue2 = tree->feedbackPaperPosition();
+	glm::vec3 clue3 = tree->feedbackPaperPosition();
 
 	do {
 
@@ -140,20 +140,19 @@ int main() {
 		tree->drawTrees(treeShader);
 		
 		// Paper
+
 		paper->setShaderCharacteristics(&paperShader, camera);
-		paper->drawPapers(&paperShader, camera, xPosition);
+		paper->drawPapers(&paperShader, camera, clue1);
 
 		paper_dont_look->setShaderCharacteristics(&paperShader, camera);
-		paper_dont_look->drawPapers(&paperShader, camera, xPosition2);
+		paper_dont_look->drawPapers(&paperShader, camera, clue2);
 
 		paper_he_can_see->setShaderCharacteristics(&paperShader, camera);
-		paper_he_can_see->drawPapers(&paperShader, camera, xPosition3);
-
+		paper_he_can_see->drawPapers(&paperShader, camera, clue3);
 		
 		collidingManager->checkCollision();
 		camera->input(window);
 		collidingManager->moveBodies();
-
 
 		// Slender
 		slenderShader.use();
@@ -163,14 +162,15 @@ int main() {
 		flashlight->lightImpact(slenderShader, *camera);
 		slender->slenderMechanics(slenderShader);
 
-		/*cout << "passou akeeeeeee" << endl;
+		cout << "-----------------" << endl;
 		cout << "passou akeeeeeee" << endl;
-		cout << "passou akeeeeeee" << endl;*/
-		slenderShader.use();
+		cout << "****************" << endl;
+		
+		/*slenderShader.use();
 		slenderShader.setVec3("viewPos", camera->cameraP);
 		moonlight->lightImpact(slenderShader, *camera);
 		flashlight->lightImpact(slenderShader, *camera);
-		slender->slenderMechanics(slenderShader);
+		slender->slenderMechanics(slenderShader);*/
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();

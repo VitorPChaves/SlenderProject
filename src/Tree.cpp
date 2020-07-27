@@ -22,6 +22,38 @@ void Tree::forEachTree(const std::function<void(CollidableBody&)>& action) {
 	}
 }
 
+glm::vec3 Tree::feedbackPaperPosition() {
+
+    vector<glm::vec3> const positions = getTreePositions();
+    //a funcao getTreePosition pega a posição das arvores toda hora
+        //se essa posição é constantemente mutável
+        //sendo assim, a posição das pistas muda toda hora também
+    //esse vetor tem que conter todas as posições
+    glm::vec3 posXisZe;
+
+    bool check = false;
+    float xposition = 0;
+    float zposition = 0;
+    while (check == false) {
+        for (int i = 0; i < positions.size(); i++) {
+            float seed = glfwGetTime();
+            srand(seed);
+            xposition = rand() % 30;
+            zposition = rand() % 30;
+
+            if (xposition == positions[i].x && zposition == positions[i].z) {
+                seed = glfwGetTime();
+                srand(seed);
+                xposition = rand() % 30;
+                zposition = rand() % 30;
+            }
+        }
+        posXisZe = glm::vec3(xposition, 0.3f, zposition);
+        break;
+    }
+    return posXisZe;
+}
+
 void Tree::generateTreesTransforms() {
     srand(0);
 
@@ -35,7 +67,9 @@ void Tree::generateTreesTransforms() {
             float treeRotateOffset = rand() % 360;
             float treeScaleOffset = rand() % 3 + 2;
 
-            model = translate(model, glm::vec3(x + xOffset, 0.0f, z + zOffset));
+            glm::vec3 treePos = glm::vec3(x + xOffset, 0.0f, z + zOffset);
+
+            model = translate(model, treePos);
             model = scale(model, glm::vec3(treeScaleOffset));
             model = rotate(model, glm::radians(treeScaleOffset), glm::vec3(0.0f, 1.0f, 0.0f));
             treeTransform.push_back(model);            

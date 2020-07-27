@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
 
@@ -51,4 +51,4 @@ private:
 };
 
 // FILESYSTEM_H
-#endif
+#endif*/
