@@ -10,10 +10,13 @@
 #include <Papers.h>
 #include <Slender.h>
 #include <Tree.h>
+#include <Menu.h>
+#include <TextRender.h>
+#include <Player.h>
 
 GLFWwindow* window = nullptr;
-Camera* camera = new Camera();
 CollidingManager* collidingManager = new CollidingManager();
+Camera* camera = new Camera();
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	camera->mouse_callback(window, xpos, ypos);
@@ -58,7 +61,6 @@ bool initGL() {
 	return true;
 }
 
-
 int main() {
 
 	if (!initGL()) {
@@ -71,6 +73,9 @@ int main() {
 	Papers* paper = new Papers();
 	Slender* slender = new Slender();
 	Tree* tree = new Tree();
+	Input* input = new Input();
+	Player* player = new Player(camera, input);
+
 
 	Shader groundShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
 	Shader treeShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
@@ -79,14 +84,15 @@ int main() {
 
 	world->initBuffers();
 	paper->initBuffers();
-	world->diffuseMap = world->initTextures("../images/ground3.jpg");
-	world->specularMap = world->initTextures("../images/ground3.jpg");
+	world->textureMapping();
 	paper->diffuseMap = world->initTextures("../images/paper.png");
+	vector<glm::vec3> treePositions = tree->getTreePositions();
 
-	BoundingBox aa(slender->slenderModel->meshes);
-	CollidableBody aabody(aa, false);
-	collidingManager->addBody(&camera->cameraBody);
-	collidingManager->addBody(&aabody);
+	BoundingBox slenderBox(slender->slenderModel->meshes);
+	CollidableBody slenderBody(slenderBox, false);
+	collidingManager->addBody(&player->playerBody);
+
+	tree->forEachTree([](CollidableBody& body) { collidingManager->addBody(&body); });
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -96,26 +102,27 @@ int main() {
 
 		// Ground
 		groundShader.use();
-		groundShader.setVec3("viewpos", camera->cameraP);
+		groundShader.setVec3("viewpos", player->getPlayerP());
 		groundShader.setFloat("material.shininess", 64.0f);
 		camera->cameraProjection(&groundShader);
-		moonlight->lightImpact(groundShader, *camera);
-		flashlight->lightImpact(groundShader, *camera);
+		moonlight->lightImpact(groundShader, *player);
+		flashlight->lightImpact(groundShader, *player);
 		world->drawGround(&groundShader);
 
 
 		// Trees
 		treeShader.use();
-		treeShader.setVec3("viewpos", camera->cameraP);
+		treeShader.setVec3("viewpos", player->getPlayerP());
 		treeShader.setFloat("material.shininess", 32.0f);
 		treeShader.setInt("material.diffuse", 0);
 		camera->cameraProjection(&treeShader);
-		moonlight->lightImpact(treeShader, *camera);
-		flashlight->lightImpact(treeShader, *camera);
+		moonlight->lightImpact(treeShader, *player);
+		flashlight->lightImpact(treeShader, *player);
 		tree->drawTrees(treeShader);
 		//tree->positionate(treeShader);
 		//tree->drawTrees(treeShader);
 		//world->drawTrees(treeShader);
+
 
 		// Paper
 		//paperShader.use();
@@ -123,21 +130,17 @@ int main() {
 		//paperShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
 		//paperShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
 		//paperShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-		//paperShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		//paperShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);  
 		//paperShader.setFloat("material.shininess", 64.0f);
 		//paperShader.setInt("material.diffuse", 0);
 		//camera->cameraProjection(&paperShader);
 		//paper->drawPapers(&paperShader);
 
+		
+		collidingManager->checkCollision();
+		input->processInput(window);
+		player->playerMovement();
 		collidingManager->moveBodies();
-		camera->input(window);
-
-		// Slender
-		//slenderShader.use();
-		//slenderShader.setVec3("viewPos", camera->cameraP);
-		//moonlight->lightImpact(slenderShader, *camera);
-		//flashlight->lightImpact(slenderShader, *camera);
-		//slender->slenderMechanics(slenderShader);
 
 
 		glfwSwapBuffers(window);

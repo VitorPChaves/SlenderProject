@@ -1,23 +1,27 @@
 #pragma once
 #include <Shader.h>
-#include <CollidableBody.h>
 
 class Camera {
 public:
+
+	Camera();
+	void cameraProjection(Shader* shader);
+	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+	void setCameraP(glm::vec3 cameraP);
+	glm::vec3 getCameraP();
+	glm::vec3 getCameraF();
+	glm::vec3 getCameraUp();
+
+private:
 	glm::vec3 cameraP;
 	glm::vec3 cameraUp;
 	glm::vec3 cameraF;
-	glm::vec3 cameraS;
-	glm::vec3 worldUp;
 
 	glm::mat4 view;
 	glm::mat4 projection;
 
 	bool firstMouse = true;
-	bool running = false;
 
-	float deltaTime = 0.0f;
-	float lastFrame = 0.0f;
 	float yaw = -90.0f;
 	float pitch = 0.0f;
 	float lastX = 400;
@@ -25,13 +29,6 @@ public:
 	float fov = 45.0f;
 	float speed = 3.0f;
 
-	float runningStartTime;
-	float runningEndTime = glfwGetTime();
-	CollidableBody cameraBody;
-
-	Camera();
-	void cameraProjection(Shader* shader);
-
-	void input(GLFWwindow* window);
-	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+	void setCameraF(glm::vec3 cameraF);
+	void setCameraUp(glm::vec3 cameraUp);
 };

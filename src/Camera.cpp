@@ -1,16 +1,11 @@
 #include <Camera.h>
-#include <Windows.h>
 
-Camera::Camera() : cameraBody(BoundingBox(glm::vec3(0), glm::vec3(0)), false) 
-{
+Camera::Camera() {
+	projection = glm::perspective(glm::radians(fov), 1024.0f / 768.0f, 0.1f, 100.0f);
+
 	cameraP = glm::vec3(0.0f, 0.0f, 1.0f);
 	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	cameraF = glm::vec3(0.0f, 0.0f, -1.0f);
-	cameraS = glm::vec3(1.0f, 0.0f, 0.0f);
-	worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-	cameraBody.setPosition(cameraP);
-	projection = glm::perspective(glm::radians(fov), 1024.0f / 768.0f, 0.1f, 100.0f);
 }
 
 void Camera::cameraProjection(Shader* shader) {
@@ -20,65 +15,6 @@ void Camera::cameraProjection(Shader* shader) {
 
 	shader->setMat4("projection", projection);
 	shader->setMat4("view", view);
-}
-
-void Camera::input(GLFWwindow* window) {
-	float currentFrame = glfwGetTime();
-	float cameraSpeed = speed * deltaTime;
-
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
-
-	cameraP = cameraBody.getPosition();
-	cameraP.y = 2.0f;
-	//cameraBody.setMovement(glm::vec3(0));
-
-	glm::vec3 movDirection = glm::vec3(0);
-
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		movDirection += cameraF;
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		movDirection -= cameraF;
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		movDirection += glm::normalize(glm::cross(cameraF, cameraUp));
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		movDirection -= glm::normalize(glm::cross(cameraF, cameraUp));
-	}
-	if (glm::length(movDirection) > 0)
-		movDirection = glm::normalize(movDirection);
-	cameraBody.setMovement(movDirection * cameraSpeed);
-
-	// sets running to false and returns to normal speed
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
-		running = false;
-		speed = 3.0f;
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-			// sets running to true if it is already past 5s after the last run
-			if (!running && glfwGetTime() - runningEndTime >= 5.0f) {
-				runningEndTime = 0;
-				running = true;
-				runningStartTime = glfwGetTime();
-				speed = 8.0f;
-			}
-
-			// makes the player stop running after 3s
-			else if (glfwGetTime() - runningStartTime >= 3.0f) {
-				speed = 3.0f;
-				runningEndTime = glfwGetTime();
-			}
-		}
-
-	}
-
 }
 
 void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -111,5 +47,30 @@ void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
-	cameraF = glm::normalize(direction);
+	setCameraF(glm::normalize(direction));
+}
+
+void Camera::setCameraP(glm::vec3 cameraP) {
+	this->cameraP = cameraP;
+	this->cameraP.y = 2.0f;
+}
+
+glm::vec3 Camera::getCameraP() {
+	return cameraP;
+}
+
+void Camera::setCameraF(glm::vec3 cameraF) {
+	this->cameraF = cameraF;
+}
+
+glm::vec3 Camera::getCameraF() {
+	return cameraF;
+}
+
+void Camera::setCameraUp(glm::vec3 cameraUp) {
+	this->cameraUp = cameraUp;
+}
+
+glm::vec3 Camera::getCameraUp() {
+	return cameraUp;
 }
