@@ -1,6 +1,6 @@
 #include <Papers.h>
 
-void Papers::initBuffers() {
+void Paper::initBuffers() {
 
 	// Vertices defined for the texture image be applied
 
@@ -44,28 +44,17 @@ void Papers::initBuffers() {
     glEnableVertexAttribArray(2);
 }
 
-void Papers::collectClue(glm::vec3& position, unsigned int func_vao, Camera* camera) {
-	//glm::vec3 position = glm::vec3(pos, 0.3f, 0.0f);
-
-	if (glm::distance(camera->cameraP, position)  <= 2.0f) {
-		shouldDraw = false;
-		std::cout << "CLUE COLLECTED " << position.x << " " << position.y << " " << position.z << std::endl;
-	}
+Paper::~Paper() {
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &VAO);
 }
 
-float Papers::position() {
-	srand(time(NULL));
-	float pos = (rand() % 10);
+void Paper::setShaderCharacteristics(Shader* paperShader, glm::vec3& _varCameraPos) {
 
-	return pos;
-}
+	paperShader->useShader();
 
-void Papers::setShaderCharacteristics(Shader* paperShader, Camera* camera) {
-
-	paperShader->use();
-
-	//paperShader.setVec3("viewPos", camera->cameraP);
-	paperShader->setVec3("viewPos", camera->cameraP);
+	paperShader->setVec3("viewPos", _varCameraPos);
 	paperShader->setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
 	paperShader->setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
 	paperShader->setVec3("light.specular", 1.0f, 1.0f, 1.0f);
@@ -74,18 +63,15 @@ void Papers::setShaderCharacteristics(Shader* paperShader, Camera* camera) {
 	paperShader->setInt("material.diffuse", 0);
 }
 
-void Papers::drawPapers(Shader* paperShader, Camera* camera, glm::vec3& paperPos) {
-
-	collectClue(paperPos, VAO, camera);
-
+void Paper::drawPaper(Shader* paperShader, Camera* camera, glm::vec3& paperPos) const {
 	if (!shouldDraw) return;
 
-	std::cout << "PAAASOU AKEEE" << std::endl;
+	paperShader->useShader();
 
-	paperShader->use();
+	//std::cout << "PAPER POS = " << paperPos.x << " " << paperPos.y << " " << paperPos.z << std::endl;
 
+	//eh necessario o uso da camera aqui
 	camera->cameraProjection(paperShader);
-
 	glm::mat4 model = glm::mat4(1.0f);
 	model = translate(model, paperPos);
 	model = rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0f));
@@ -94,8 +80,17 @@ void Papers::drawPapers(Shader* paperShader, Camera* camera, glm::vec3& paperPos
 	//bind diffuse map
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, diffuseMap);
-
+	//glDisable(GL_DEPTH_TEST);
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//glEnable(GL_DEPTH_TEST);
 	//glBindVertexArray(0);
+}
+
+void Paper::undrawPaper(const glm::vec3& position, glm::vec3& _varCameraPos) {
+
+	if (glm::distance(_varCameraPos, position) <= 2.0f) {
+		shouldDraw = false;
+		std::cout << "CLUE COLLECTED " << position.x << " " << position.y << " " << position.z << std::endl;
+	}
 }

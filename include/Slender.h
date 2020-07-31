@@ -12,15 +12,14 @@ public:
 
 	void slenderMechanics(Shader& slenderShader);
 
+private:
 	double timeElapsed();
 
 	float position();
 
 private:
-	Camera* camera;
-
-	bool showSlender = false;
-	float time_aux = 10;
 	//this is the multiplier for slender appearence
 	float i = 1;
+	bool showSlender = false;
+	float time_aux = 10;
 };

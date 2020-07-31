@@ -30,8 +30,6 @@ void Camera::input(GLFWwindow* window) {
 	lastFrame = currentFrame;
 	cameraP = cameraBody.getPosition();
 	cameraP.y = 2.0f;
-	//cameraBody.setMovement(glm::vec3(0));
-	//std::cout << cameraP.x << ',' << cameraP.z << std::endl;
 	glm::vec3 movDirection = glm::vec3(0);
 
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

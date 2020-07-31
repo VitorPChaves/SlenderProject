@@ -20,7 +20,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 bool initGL() {
-
 	if (!glfwInit()) {
 		fprintf(stderr, "Failed to initialize GLFW\n");
 		return false;
@@ -48,7 +47,7 @@ bool initGL() {
 
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
-		return -1;
+		return false;
 	}
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -58,37 +57,32 @@ bool initGL() {
 	return true;
 }
 
-float position() {
-	srand(time(NULL));
-	float pos = (rand() % 3);
-
-	return pos;
-}
 
 int main() {
-
 	if (!initGL()) {
 		return -1;
 	}
 
-	Moonlight* moonlight = new Moonlight();
-	Flashlight* flashlight = new Flashlight();
-	World* world = new World();
-	Papers* paper = new Papers();
-	Papers* paper_dont_look = new Papers();
-	Papers* paper_he_can_see = new Papers();
-	Slender* slender = new Slender();
-	Tree* tree = new Tree();
-	
 	Shader groundShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
 	Shader treeShader("../shaders/defaultLightVS.txt", "../shaders/defaultLightFS.txt");
 	Shader paperShader("../shaders/vsPaperCoord.txt", "../shaders/fsPaperCoord.txt");
+	Shader paperShader2("../shaders/vsPaperCoord.txt", "../shaders/fsPaperCoord.txt");
+	Shader paperShader3("../shaders/vsPaperCoord.txt", "../shaders/fsPaperCoord.txt");
 	Shader slenderShader("../shaders/vsSuit.txt", "../shaders/fsSuit.txt");
 
+	Moonlight* moonlight = new Moonlight();
+	Flashlight* flashlight = new Flashlight();
+	World* world = new World();
+	Paper* paper = new Paper();
+	Paper* paper_dont_look = new Paper();
+	Paper* paper_he_can_see = new Paper();
+	Slender* slender = new Slender();
+	Tree* tree = new Tree();
+
 	world->initBuffers();
-	paper->initBuffers();
-	paper_dont_look->initBuffers();
-	paper_he_can_see->initBuffers();
+	//paper->initBuffers();
+	//paper_dont_look->initBuffers();
+	//paper_he_can_see->initBuffers();
 
 	world->diffuseMap = world->initTextures("../images/ground3.jpg");
 	world->specularMap = world->initTextures("../images/ground3.jpg");
@@ -106,16 +100,16 @@ int main() {
 
 	glEnable(GL_DEPTH_TEST);
 
-	glm::vec3 clue1 = tree->feedbackPaperPosition();
-	glm::vec3 clue2 = tree->feedbackPaperPosition();
-	glm::vec3 clue3 = tree->feedbackPaperPosition();
+	glm::vec3 clue1 = tree->feedbackDrawPosition();
+	glm::vec3 clue2 = tree->feedbackDrawPosition();
+	glm::vec3 clue3 = tree->feedbackDrawPosition();
 
 	do {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Ground
-		groundShader.use();
+		groundShader.useShader();
 		groundShader.setVec3("viewpos", camera->cameraP);
 		groundShader.setFloat("material.shininess", 64.0f);
 		camera->cameraProjection(&groundShader);
@@ -124,7 +118,7 @@ int main() {
 		world->drawGround(&groundShader);
 
 		// Trees
-		treeShader.use();
+		treeShader.useShader();
 		treeShader.setVec3("viewpos", camera->cameraP);
 		treeShader.setFloat("material.shininess", 32.0f);
 		treeShader.setInt("material.diffuse", 0);
@@ -133,44 +127,40 @@ int main() {
 		flashlight->lightImpact(treeShader, *camera);
 
 		world->drawTrees(treeShader);
-		//BoundingBox box(world->treeModel->meshes);
-		//CollidableBody boxBody(box, true);
-		//collidingManager.addBody(&boxBody);
 
 		tree->drawTrees(treeShader);
 		
 		// Paper
+		glm::vec3 variavelCamPos = glm::vec3(camera->cameraP.x, camera->cameraP.y, camera->cameraP.z);
 
-		paper->setShaderCharacteristics(&paperShader, camera);
-		paper->drawPapers(&paperShader, camera, clue1);
+		paper->setShaderCharacteristics(&paperShader, variavelCamPos);
+		paper->undrawPaper(clue1, variavelCamPos);
+		paper->drawPaper(&paperShader, camera, clue1);
+		std::cout << "PAPER POS 1 = " << clue1.x << " " << clue1.y << " " << clue1.z << std::endl;
 
-		paper_dont_look->setShaderCharacteristics(&paperShader, camera);
-		paper_dont_look->drawPapers(&paperShader, camera, clue2);
+		paper_dont_look->setShaderCharacteristics(&paperShader, variavelCamPos);
+		paper_dont_look->undrawPaper(clue2, variavelCamPos);
+		paper_dont_look->drawPaper(&paperShader2, camera, clue2);
+		std::cout << "PAPER POS 2 = " << clue2.x << " " << clue2.y << " " << clue2.z << std::endl;
 
-		paper_he_can_see->setShaderCharacteristics(&paperShader, camera);
-		paper_he_can_see->drawPapers(&paperShader, camera, clue3);
+		paper_he_can_see->setShaderCharacteristics(&paperShader, variavelCamPos);
+		paper_he_can_see->undrawPaper(clue3, variavelCamPos);
+		paper_he_can_see->drawPaper(&paperShader3, camera, clue3);
+		std::cout << "PAPER POS 3 = " << clue3.x << " " << clue3.y << " " << clue3.z << std::endl;
 		
 		collidingManager->checkCollision();
 		camera->input(window);
 		collidingManager->moveBodies();
 
 		// Slender
-		slenderShader.use();
-		camera->cameraProjection(&slenderShader);
+		slenderShader.useShader();
 		slenderShader.setVec3("viewPos", camera->cameraP);
+		camera->cameraProjection(&slenderShader);
 		moonlight->lightImpact(slenderShader, *camera);
 		flashlight->lightImpact(slenderShader, *camera);
 		slender->slenderMechanics(slenderShader);
 
-		cout << "-----------------" << endl;
-		cout << "passou akeeeeeee" << endl;
-		cout << "****************" << endl;
-		
-		/*slenderShader.use();
-		slenderShader.setVec3("viewPos", camera->cameraP);
-		moonlight->lightImpact(slenderShader, *camera);
-		flashlight->lightImpact(slenderShader, *camera);
-		slender->slenderMechanics(slenderShader);*/
+		cout << "Cam == " << camera->cameraP.x << " " << camera->cameraP.y << " " << camera->cameraP.z << endl;
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -178,9 +168,7 @@ int main() {
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window));
 
 	world->~World();
-	glDeleteProgram(groundShader.shaderProgram);
-	glDeleteProgram(treeShader.shaderProgram);
-	glDeleteProgram(slenderShader.shaderProgram);
+	paper->~Paper();
 
 	glfwTerminate();
 

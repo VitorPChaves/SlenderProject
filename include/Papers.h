@@ -3,21 +3,28 @@
 #include <time.h>
 #include <camera.h>
 
-class Papers {
+class Paper {
 public:
 	unsigned int diffuseMap;
 
-	void initBuffers();
+	Paper() {
+		initBuffers();
+	}
 
-	void setShaderCharacteristics(Shader* shader, Camera* camera);
+	~Paper();
 
-	void drawPapers(Shader* paperShader, Camera* camera, glm::vec3& paperPos);
+	//passar cm referencia a posicao
+	void setShaderCharacteristics(Shader* shader, glm::vec3& varCameraPos);
 
-	float position();
+	void drawPaper(Shader* paperShader, Camera* camera, glm::vec3& paperPos) const;
 
-	void collectClue(glm::vec3& pos, unsigned int vao, Camera* camera);
+	//passar cm referencia a posicao
+	void Paper::undrawPaper(const glm::vec3& pos, glm::vec3& _varCameraPos);
 
 private:
-	unsigned int VBO, VAO, EBO;
+	void initBuffers();
+
+private:
+	unsigned int VBO = 0, VAO = 0, EBO = 0;
 	bool shouldDraw = true;
 };

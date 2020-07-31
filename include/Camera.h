@@ -26,7 +26,7 @@ public:
 	float speed = 3.0f;
 
 	float runningStartTime;
-	float runningEndTime = glfwGetTime();
+	float runningEndTime = (float)glfwGetTime();
 	CollidableBody cameraBody;
 
 	Camera();

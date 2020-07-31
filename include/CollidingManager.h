@@ -25,20 +25,9 @@ public:
 					continue;
 				}
 
-				//auto lastPosition1 = body1->getPosition();
-				//auto lastPosition2 = body2->getPosition();
-
-				//std::cout << "1 - " << body1->getBoundingBox().getCenter().x << " " << body1->getBoundingBox().getCenter().y << " " << body1->getBoundingBox().getCenter().z << std::endl;
-				//std::cout << "2 - " << body2->getBoundingBox().getCenter().x << " " << body2->getBoundingBox().getCenter().y << " " << body2->getBoundingBox().getCenter().z << std::endl;
-				//std::cout << "-------------------------------------------" << std::endl;
-
 				if (intersection(*body1, *body2)) {
-					//auto aaa = intersection(*body1, *body2);
-
 					body1->restoreLastPosition();
 					body2->restoreLastPosition();
-					//body1->setPosition(lastPosition1);
-					//body2->setPosition(lastPosition2);
 				}
 			}
 		}
@@ -47,7 +36,6 @@ public:
 		auto a = body1.getBoundingBox();
 		auto b = body2.getBoundingBox();
 		return(a.min.x <= b.max.x && a.max.x >= b.min.x) &&
-		//(a.min.y <= b.max.y && a.max.y >= b.min.y) &&
 		(a.min.z <= b.max.z && a.max.z >= b.min.z);
 	}
 

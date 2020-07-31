@@ -13,11 +13,10 @@
 
 class Shader {
 private:
-	//unsigned int shaderProgram;
+	unsigned int shaderProgram;
 public:
 	GLint Result = GL_FALSE;
 	int InfoLogLength = 0;
-	unsigned int shaderProgram;
 
 	// Reads and builds the shader
 	Shader(const char* vertexPath, const char* fragmentPath) {
@@ -110,8 +109,8 @@ public:
 			
 	}
 	// Activate the shader
-	void use() {
-		glUseProgram(shaderProgram);	
+	void useShader() {
+		glUseProgram(shaderProgram);
 	}
 
 	void setBool(const std::string &name, bool value) const {
@@ -139,6 +138,10 @@ public:
 	}
 	void setVec3(const std::string& name, float x, float y, float z) const {
 		glUniform3f(glGetUniformLocation(shaderProgram, name.c_str()), x, y, z);
+	}
+
+	~Shader() {
+		glDeleteShader(shaderProgram);
 	}
 };
 #endif

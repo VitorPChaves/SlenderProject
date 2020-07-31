@@ -22,36 +22,67 @@ void Tree::forEachTree(const std::function<void(CollidableBody&)>& action) {
 	}
 }
 
-glm::vec3 Tree::feedbackPaperPosition() {
+float calculateDistance(const glm::vec2& randomPosition, const vector<glm::vec3>& allTreesPositions) {
+    float minDistance = std::numeric_limits<float>::max();
 
-    vector<glm::vec3> const positions = getTreePositions();
-    //a funcao getTreePosition pega a posição das arvores toda hora
-        //se essa posição é constantemente mutável
-        //sendo assim, a posição das pistas muda toda hora também
-    //esse vetor tem que conter todas as posições
-    glm::vec3 posXisZe;
+    for (const auto& p : allTreesPositions) {
+        auto d = glm::distance(randomPosition, glm::vec2(p.x, p.z));
 
-    bool check = false;
-    float xposition = 0;
-    float zposition = 0;
-    while (check == false) {
-        for (int i = 0; i < positions.size(); i++) {
-            float seed = glfwGetTime();
-            srand(seed);
-            xposition = rand() % 30;
-            zposition = rand() % 30;
-
-            if (xposition == positions[i].x && zposition == positions[i].z) {
-                seed = glfwGetTime();
-                srand(seed);
-                xposition = rand() % 30;
-                zposition = rand() % 30;
-            }
+        if (d < minDistance)
+        {
+            minDistance = d;
         }
-        posXisZe = glm::vec3(xposition, 0.3f, zposition);
-        break;
     }
-    return posXisZe;
+
+    return minDistance;
+}
+
+glm::vec3 Tree::feedbackDrawPosition() {
+    vector<glm::vec3> positions = getTreePositions();
+
+    glm::vec2 randomPosition;
+
+    do {
+        randomPosition = glm::vec2(rand() % 30, rand() % 30);
+    } while (calculateDistance(randomPosition, positions) < 1.0f);
+
+    positions.push_back(glm::vec3(randomPosition.x, 0.3f, randomPosition.y));
+    return glm::vec3(randomPosition.x, 0.3f, randomPosition.y);
+
+
+
+    //vector<glm::vec3> const positions = getTreePositions();
+    ////a funcao getTreePosition pega a posição das arvores toda hora
+    //    //se essa posição é constantemente mutável
+    //    //sendo assim, a posição das pistas muda toda hora também
+    ////esse vetor tem que conter todas as posições
+    //glm::vec3 posXisZe;
+
+    //bool check = false;
+    //float xposition = 0;
+    //float zposition = 0;
+    ////while (check == false) {
+    //    for (int i = 0; i < positions.size(); i++) {
+    //        float seed = glfwGetTime();
+    //        srand(seed);
+    //        xposition = rand() % 30;
+    //        zposition = rand() % 30;
+
+    //        //if (glm::distance(glm::vec2(xposition, zposition), glm::vec2(positions[i].x, positions[i].z)) < 1.0f) {
+
+    //        //}
+
+    //        if (xposition == positions[i].x && zposition == positions[i].z) {
+    //            seed = glfwGetTime();
+    //            srand(seed);
+    //            xposition = rand() % 30;
+    //            zposition = rand() % 30;
+    //        }
+    //    }
+    //    posXisZe = glm::vec3(xposition, 0.3f, zposition);
+    //    //break;
+    ////}
+    //return posXisZe;
 }
 
 void Tree::generateTreesTransforms() {

@@ -12,15 +12,13 @@ public:
 	void drawTrees(Shader& shader);
 	vector<glm::vec3> getTreePositions();
 
-	//void collectPosition(glm::vec3 treePos);
-
-	glm::vec3 feedbackPaperPosition();
+	glm::vec3 feedbackDrawPosition();
 
 	void forEachTree(const std::function<void(CollidableBody&)>& action);
 
 private:
 
-	int forestSize = 20;
+	int forestSize = -59;
 	int treeSpacing = 10;
 	std::unique_ptr<class Model> treeModel;
 	std::vector<glm::mat4> treeTransform;

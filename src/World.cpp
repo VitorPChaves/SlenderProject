@@ -143,5 +143,5 @@ void World::drawTrees(Shader& shader) {
             treeModel->Draw(shader);
         }
     }
-}
+}   
 

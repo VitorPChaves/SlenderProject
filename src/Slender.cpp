@@ -17,8 +17,7 @@ double Slender::timeElapsed() {
 }
 
 float Slender::position() {
-	srand(time(NULL));
-	//float pos = (rand() % 20) - 10;
+	srand(0);
 	float pos = rand() % 10;
 
 	return pos;
@@ -30,32 +29,29 @@ float Slender::position() {
 void Slender::slenderMechanics(Shader& slenderShader) {
 	auto time = timeElapsed();
 
-	float xPosition = 2.0f;//position();
-	float zPosition = 0.0f;//position();
+	float xPosition = position();
+	float zPosition = position();
 	
-	std::cout << time << std::endl;
+	std::cout << timeElapsed() << std::endl;
 
 	//the slender will appear each "multiplier(i) * 10"
-	if (time >= time_aux) {
+	if (timeElapsed() >= time_aux) {
 		showSlender = !showSlender;
 		i += 1.0;
 		time_aux += (i * 10);
-
-		std::cout << "passs here" << std::endl;
-		std::cout << "passs here" << std::endl;
-		std::cout << "passs here" << std::endl;
 	}
 
 	if (showSlender) {
-		std::cout << "SLENDER A VISTA" << std::endl;
 
-		slenderShader.use();
-
+		showSlender = true;
+		slenderShader.useShader();
 		glm::mat4 model = glm::mat4(1.0f);
-		model = translate(model, glm::vec3(xPosition, 1.2, zPosition));
-		model = scale(model, glm::vec3(5.0,5.0,5.0));
+		model = translate(model, glm::vec3(2.0, 1.4, 5.0));
+		model = scale(model, glm::vec3(1.5, 1.5, 1.5));
+		slenderShader.setMat4("model", model);
 
-		//slenderShader.setMat4("model", model);
+		std::cout << "Slender == " << xPosition << " " << zPosition << std::endl;
+
 		glEnable(GL_FRAMEBUFFER_SRGB);
 		slenderModel->Draw(slenderShader);
 	}
