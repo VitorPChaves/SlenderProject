@@ -16,9 +16,9 @@ double Slender::timeElapsed() {
 	return glfwGetTime();
 }
 
-float Slender::position() {
+int Slender::position() {
 	srand(0);
-	float pos = rand() % 10;
+	int pos = rand() % 10;
 
 	return pos;
 }
@@ -37,8 +37,9 @@ void Slender::slenderMechanics(Shader& slenderShader) {
 	//the slender will appear each "multiplier(i) * 10"
 	if (timeElapsed() >= time_aux) {
 		showSlender = !showSlender;
-		i += 1.0;
-		time_aux += (i * 10);
+		//i += 1.0;
+		//time_aux += (i * 10);
+		time_aux += 20;
 	}
 
 	if (showSlender) {

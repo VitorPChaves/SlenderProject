@@ -1,6 +1,7 @@
 #pragma once
 #include <Shader.h>
 #include <time.h>
+#include <cstdlib>
 #include <camera.h>
 
 class Paper {
@@ -21,10 +22,14 @@ public:
 	//passar cm referencia a posicao
 	void Paper::undrawPaper(const glm::vec3& pos, glm::vec3& _varCameraPos);
 
+	bool endProgram();
+
 private:
 	void initBuffers();
 
 private:
 	unsigned int VBO = 0, VAO = 0, EBO = 0;
+	int numOfCollectedClues = 0;
 	bool shouldDraw = true;
+	bool auxEndFlag = false;
 };

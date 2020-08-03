@@ -15,11 +15,11 @@ public:
 private:
 	double timeElapsed();
 
-	float position();
+	int position();
 
 private:
 	//this is the multiplier for slender appearence
 	float i = 1;
 	bool showSlender = false;
-	float time_aux = 10;
+	float time_aux = 20;
 };

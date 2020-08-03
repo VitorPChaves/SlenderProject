@@ -89,8 +89,18 @@ void Paper::drawPaper(Shader* paperShader, Camera* camera, glm::vec3& paperPos) 
 
 void Paper::undrawPaper(const glm::vec3& position, glm::vec3& _varCameraPos) {
 
+	if (numOfCollectedClues == 3) {
+		auxEndFlag = true;
+	}
+	
 	if (glm::distance(_varCameraPos, position) <= 2.0f) {
 		shouldDraw = false;
 		std::cout << "CLUE COLLECTED " << position.x << " " << position.y << " " << position.z << std::endl;
+
+		numOfCollectedClues += 1;
 	}
+}
+
+bool Paper::endProgram() {
+	return auxEndFlag;
 }

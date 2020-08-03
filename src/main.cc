@@ -11,6 +11,8 @@
 #include <Slender.h>
 #include <Tree.h>
 
+//bool endFlag = false;
+
 GLFWwindow* window = nullptr;
 Camera* camera = new Camera();
 CollidingManager* collidingManager = new CollidingManager();
@@ -104,9 +106,13 @@ int main() {
 	glm::vec3 clue2 = tree->feedbackDrawPosition();
 	glm::vec3 clue3 = tree->feedbackDrawPosition();
 
+	bool endFlag;
+
 	do {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		endFlag = paper->endProgram();
 
 		// Ground
 		groundShader.useShader();
@@ -138,12 +144,12 @@ int main() {
 		paper->drawPaper(&paperShader, camera, clue1);
 		std::cout << "PAPER POS 1 = " << clue1.x << " " << clue1.y << " " << clue1.z << std::endl;
 
-		paper_dont_look->setShaderCharacteristics(&paperShader, variavelCamPos);
+		paper_dont_look->setShaderCharacteristics(&paperShader2, variavelCamPos);
 		paper_dont_look->undrawPaper(clue2, variavelCamPos);
 		paper_dont_look->drawPaper(&paperShader2, camera, clue2);
 		std::cout << "PAPER POS 2 = " << clue2.x << " " << clue2.y << " " << clue2.z << std::endl;
 
-		paper_he_can_see->setShaderCharacteristics(&paperShader, variavelCamPos);
+		paper_he_can_see->setShaderCharacteristics(&paperShader3, variavelCamPos);
 		paper_he_can_see->undrawPaper(clue3, variavelCamPos);
 		paper_he_can_see->drawPaper(&paperShader3, camera, clue3);
 		std::cout << "PAPER POS 3 = " << clue3.x << " " << clue3.y << " " << clue3.z << std::endl;
